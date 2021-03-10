@@ -100,7 +100,7 @@ static struct {
         {"info", "print register/watchpoint information:\"info r/w\"", cmd_info},
         {"p", "print expr\'s val ", cmd_p},
         {"x", "scan memory\'s val:\"x N epxr\"", cmd_x},
-        {"w", "add a watchpoint in memory", cmd_w}
+        {"w", "add a watchpoint in memory", cmd_w},
         { "d", "delete a watchpoint", cmd_d }
         /* TODO: Add more commands */
 
