@@ -16,9 +16,9 @@
       fprintf(stderr, "\33[1;31m"); \
       fprintf(stderr, __VA_ARGS__); \
       fprintf(stderr, "\33[0m\n"); \
-      extern void Aisa_reg_display(); \
+      extern void isa_reg_display(); \
       extern void monitor_statistic(); \
-      Aisa_reg_display(); \
+      isa_reg_display(); \
       monitor_statistic(); \
       assert(cond); \
     } \
