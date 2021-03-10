@@ -74,7 +74,7 @@ static int cmd_x(char *args) {
     int read_num;
 
     for (int i = 0; i < read_num; i++)
-        printf("Mem = %x, Val = %x\n", padder + read_num * 4, paddr_read(padder + read_num * 4, 4));
+        printf("Mem = %x, Val = %x\n", padder + read_num * 4, (int)paddr_read(padder + read_num * 4, 4));
 
     return 0;
 }
