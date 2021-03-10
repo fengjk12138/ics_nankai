@@ -69,13 +69,13 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_x(char *args) {
-    char *arg = strtok(NULL, " ");
+//    char *arg = strtok(NULL, " ");
     int padder;
-    int read_num;
+    int read_num=0x114514;
 
     for (int i = 0; i < read_num; i++)
-        printf("Mem = %x, Val = %x\n", padder + read_num * 4, (int)paddr_read(padder + read_num * 4, 4));
-
+        printf("Mem = %x, Val = %x\n", padder + read_num * 4, (int)vaddr_read(padder + read_num * 4, 4));
+    //todo:补全表达式
     return 0;
 }
 

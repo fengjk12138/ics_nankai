@@ -49,7 +49,7 @@ static inline void pmem_write(paddr_t addr, word_t data, int len) {
 
 /* Memory accessing interfaces */
 
-inline word_t paddr_read(paddr_t addr, int len) {
+inline word_t (paddr_t addr, int len) {
   if (in_pmem(addr)) return pmem_read(addr, len);
   else return map_read(addr, len, fetch_mmio_map(addr));
 }
