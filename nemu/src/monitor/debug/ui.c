@@ -6,7 +6,7 @@
 #include <readline/history.h>
 
 void cpu_exec(uint64_t);
-vaddr_read(paddr_t , int );
+word_t vaddr_read(paddr_t , int );
 int is_batch_mode();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
