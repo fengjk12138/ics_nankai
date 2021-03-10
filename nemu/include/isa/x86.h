@@ -19,8 +19,8 @@
 
 typedef struct {
   struct {
-    uint32_t _32;
     uint16_t _16;
+    uint32_t _32;
     uint8_t _8[2];
   } gpr[8];
 
