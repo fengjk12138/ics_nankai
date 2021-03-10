@@ -6,7 +6,7 @@
 #include <readline/history.h>
 
 void cpu_exec(uint64_t);
-
+vaddr_read(paddr_t , int );
 int is_batch_mode();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -70,7 +70,7 @@ static int cmd_p(char *args) {
 
 static int cmd_x(char *args) {
 //    char *arg = strtok(NULL, " ");
-    int padder;
+    int padder=0x19260817;
     int read_num=0x114514;
 
     for (int i = 0; i < read_num; i++)
