@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-
+#include <memory/vaddr.h>
 void cpu_exec(uint64_t);
 word_t vaddr_read(paddr_t , int );
 int is_batch_mode();
