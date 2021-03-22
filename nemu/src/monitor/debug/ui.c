@@ -52,14 +52,16 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_info(char *args) {
+    printf("%s",args);
     char *arg = strtok(NULL, " ");
+
     if (strcmp(arg, "r") == 0) {
         isa_reg_display();
     } else if (strcmp(arg, "w") == 0) {
-        return -1;
+        return 0;
     } else {
         printf("args should be \'r\' or \'w\'");
-        return -1;
+        return 0;
     }
     return 0;
 }
