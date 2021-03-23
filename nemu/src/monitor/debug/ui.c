@@ -5,8 +5,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <memory/vaddr.h>
+
 void cpu_exec(uint64_t);
-word_t vaddr_read(paddr_t , int );
+
+word_t vaddr_read(paddr_t, int);
+
 int is_batch_mode();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
@@ -52,7 +55,7 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_info(char *args) {
-    printf("%s",args);
+    printf("%s", args);
     char *arg = strtok(NULL, " ");
 
     if (strcmp(arg, "r") == 0) {
@@ -67,16 +70,28 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_p(char *args) {
-    return -1;
+    if (strlen(args) < 1) {
+        printf("string length not enough");
+        return 0;
+    }
+    bool succ = true;
+    bool *success = &succ;
+    unsigned int result = expr(args, success);
+    if (*success == false) {
+        printf("please check your expr");
+        return 0;
+    }
+    printf("%d\n", result);
+    return 0;
 }
 
 static int cmd_x(char *args) {
 //    char *arg = strtok(NULL, " ");
-    int padder=0x19260817;
-    int read_num=0x114514;
+    int padder = 0x19260817;
+    int read_num = 0x114514;
 
     for (int i = 0; i < read_num; i++)
-        printf("Mem = %x, Val = %x\n", padder + read_num * 4, (int)vaddr_read(padder + read_num * 4, 4));
+        printf("Mem = %x, Val = %x\n", padder + read_num * 4, (int) vaddr_read(padder + read_num * 4, 4));
     //todo:补全表达式
     return 0;
 }
@@ -95,15 +110,15 @@ static struct {
 
     int (*handler)(char *);
 } cmd_table[] = {
-        {"help", "Display informations about all supported commands", cmd_help},
-        {"c", "Continue the execution of the program", cmd_c},
-        {"q", "Exit NEMU", cmd_q},
-        {"si", "run one/any step:\"si n\"mean run n step", cmd_si},
+        {"help", "Display informations about all supported commands",  cmd_help},
+        {"c",    "Continue the execution of the program",              cmd_c},
+        {"q",    "Exit NEMU",                                          cmd_q},
+        {"si",   "run one/any step:\"si n\"mean run n step",           cmd_si},
         {"info", "print register/watchpoint information:\"info r/w\"", cmd_info},
-        {"p", "print expr\'s val ", cmd_p},
-        {"x", "scan memory\'s val:\"x N epxr\"", cmd_x},
-        {"w", "add a watchpoint in memory", cmd_w},
-        { "d", "delete a watchpoint", cmd_d }
+        {"p",    "print expr\'s val ",                                 cmd_p},
+        {"x",    "scan memory\'s val:\"x N epxr\"",                    cmd_x},
+        {"w",    "add a watchpoint in memory",                         cmd_w},
+        {"d",    "delete a watchpoint",                                cmd_d}
         /* TODO: Add more commands */
 
 };
