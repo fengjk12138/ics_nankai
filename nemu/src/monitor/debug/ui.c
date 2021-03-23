@@ -49,7 +49,7 @@ static int cmd_si(char *args) {
         run_num = 1;
     else run_num = atoi(arg);
     if (run_num <= 0)
-        printf("args is not a number");
+        printf("args is not a number\n");
     cpu_exec(run_num);
     return 0;
 }
@@ -63,22 +63,21 @@ static int cmd_info(char *args) {
     } else if (strcmp(arg, "w") == 0) {
         return 0;
     } else {
-        printf("args should be \'r\' or \'w\'");
+        printf("args should be \'r\' or \'w\'\n");
         return 0;
     }
     return 0;
 }
 
 static int cmd_p(char *args) {
-    if (strlen(args) < 1) {
-        printf("string length not enough");
+    if (args == NULL) {
+        printf("string length not enough\n");
         return 0;
     }
     bool succ = true;
-    bool *success = &succ;
-    unsigned int result = expr(args, success);
-    if (*success == false) {
-        printf("please check your expr");
+    unsigned int result = expr(args, &succ);
+    if (*succ == false) {
+        printf("please check your expr\n");
         return 0;
     }
     printf("%d\n", result);
@@ -97,11 +96,31 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_w(char *args) {
-    return -1;
+    if (args == NULL) {
+        printf("watchpoint string length not enough\n");
+        return 0;
+    }
+    WP *watp = new_wp();
+    bool succ = true;
+    watp->val_before = expr(args, &succ);
+    free_wp(watp->NO);
+    if (!succ) {
+        printf("please check your watchpoint expr\n");
+        return 0;
+    }
+    strcpt(watp->expr, args);
+    printf("watchponit add successful, now it\'s val is %d\n", watp->val_before);
+    return 0;
 }
 
 static int cmd_d(char *args) {
-    return -1;
+    if (args == NULL) {
+        printf("please input which watchpoint you watch to delete\n");
+        return 0;
+    }
+
+
+    return 0;
 }
 
 static struct {
@@ -110,15 +129,15 @@ static struct {
 
     int (*handler)(char *);
 } cmd_table[] = {
-        {"help", "Display informations about all supported commands",  cmd_help},
-        {"c",    "Continue the execution of the program",              cmd_c},
-        {"q",    "Exit NEMU",                                          cmd_q},
-        {"si",   "run one/any step:\"si n\"mean run n step",           cmd_si},
-        {"info", "print register/watchpoint information:\"info r/w\"", cmd_info},
-        {"p",    "print expr\'s val ",                                 cmd_p},
-        {"x",    "scan memory\'s val:\"x N epxr\"",                    cmd_x},
-        {"w",    "add a watchpoint in memory",                         cmd_w},
-        {"d",    "delete a watchpoint",                                cmd_d}
+        {"help", "Display informations about all supported commands\n",  cmd_help},
+        {"c",    "Continue the execution of the program\n",              cmd_c},
+        {"q",    "Exit NEMU\n",                                          cmd_q},
+        {"si",   "run one/any step:\"si n\"mean run n step\n",           cmd_si},
+        {"info", "print register/watchpoint information:\"info r/w\"\n", cmd_info},
+        {"p",    "print expr\'s val \n",                                 cmd_p},
+        {"x",    "scan memory\'s val:\"x N epxr\"\n",                    cmd_x},
+        {"w",    "add a watchpoint in memory\n",                         cmd_w},
+        {"d",    "delete a watchpoint\n",                                cmd_d}
         /* TODO: Add more commands */
 
 };
