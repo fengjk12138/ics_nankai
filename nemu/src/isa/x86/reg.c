@@ -54,31 +54,28 @@ void isa_reg_display() {
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-    if (strcmp("eax", s) == 0) {
+    if (strcmp("$eax", s) == 0) {
         *success = true;
         return cpu.eax;
-    } else if (strcmp("ecx", s) == 0) {
+    } else if (strcmp("$ecx", s) == 0) {
         *success = true;
         return cpu.ecx;
-    } else if (strcmp("ebx", s) == 0) {
+    } else if (strcmp("$ebx", s) == 0) {
         *success = true;
         return cpu.ebx;
-    } else if (strcmp("edx", s) == 0) {
+    } else if (strcmp("$edx", s) == 0) {
         *success = true;
         return cpu.edx;
-    } else if (strcmp("ebx", s) == 0) {
-        *success = true;
-        return cpu.ebx;
-    } else if (strcmp("ebp", s) == 0) {
+    } else if (strcmp("$ebp", s) == 0) {
         *success = true;
         return cpu.ebp;
-    } else if (strcmp("esp", s) == 0) {
+    } else if (strcmp("$esp", s) == 0) {
         *success = true;
         return cpu.esp;
-    } else if (strcmp("esi", s) == 0) {
+    } else if (strcmp("$esi", s) == 0) {
         *success = true;
         return cpu.esi;
-    } else if (strcmp("edi", s) == 0) {
+    } else if (strcmp("$edi", s) == 0) {
         *success = true;
         return cpu.edi;
     } else {

@@ -45,15 +45,16 @@ static struct rule {
         {">=",          TK_BQ},
         {">",           TK_B},
         {"<",           TK_S},
-        {"^(\\$)",      TK_REG},
+
         {"0x[0-9]*",    TK_HEX},
         {"\\(",         '('},
         {"\\)",         ')'},
         {"[1-9][0-9]*", TK_DEC},
         {"&&",          TK_AND},
         {"!=",          TK_NEQ},
-        {"||",          TK_OR},
-        {"!",           TK_NOT}
+        {"\\|\\|",      TK_OR},
+        {"!",           TK_NOT},
+        {"\\$[a-z]+",   TK_REG},
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -164,7 +165,10 @@ int eval(int l, int r, bool *success) {
         *success = false;
     } else if (l == r) {
         if (tokens[l].type == TK_HEX) {
-            return atoi(tokens[l].str);
+            int ret = 0, len = strlen(tokens[l].str);
+            for (int udp = 2; udp < len; udp++)
+                ret = ret * 16 + tokens[l].str[udp] - '0';
+            return ret;
         } else if (tokens[l].type == TK_DEC) {
             return atoi(tokens[l].str);
         } else if (tokens[l].type == TK_REG) {
@@ -259,6 +263,7 @@ word_t expr(char *e, bool *success) {
         return 0;
     }
     *success = true;
+    printf("%d\n", nr_token);
     for (int i = 0; i < nr_token; i++)
         printf("test %s\n", tokens[i].str);
     /* TODO: Insert codes to evaluate the expression. */

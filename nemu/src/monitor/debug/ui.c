@@ -76,7 +76,7 @@ static int cmd_p(char *args) {
     }
     bool succ = true;
     unsigned int result = expr(args, &succ);
-    if (*succ == false) {
+    if (succ == false) {
         printf("please check your expr\n");
         return 0;
     }
@@ -85,13 +85,22 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_x(char *args) {
-//    char *arg = strtok(NULL, " ");
-    int padder = 0x19260817;
-    int read_num = 0x114514;
+    printf("%s\n", args);
+    char tmp[256];
+    strcpy(tmp, args);
+    char *arg = strtok(NULL, " ");
+
+    printf("%s\n", tmp + strlen(arg) + 1);
+    bool succ = true;
+    int padder = expr(tmp + strlen(arg) + 1, &succ);
+    if(!succ){
+        printf("please check your scanf mem expr\n");
+        return 0;
+    }
+    int read_num = atoi(arg);
 
     for (int i = 0; i < read_num; i++)
         printf("Mem = %x, Val = %x\n", padder + read_num * 4, (int) vaddr_read(padder + read_num * 4, 4));
-    //todo:补全表达式
     return 0;
 }
 
@@ -108,7 +117,7 @@ static int cmd_w(char *args) {
         printf("please check your watchpoint expr\n");
         return 0;
     }
-    strcpt(watp->expr, args);
+    strcpy(watp->expr, args);
     printf("watchponit add successful, now it\'s val is %d\n", watp->val_before);
     return 0;
 }
