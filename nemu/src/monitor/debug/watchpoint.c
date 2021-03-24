@@ -56,3 +56,24 @@ WP *new_wp() {
     return ret;
 }
 
+int check_watchpoint() {
+    WP *font = head;
+    while (font != NULL) {
+        bool succ = true;
+        int val = expr(font->expr, &succ);
+        if (!succ)
+            return font->NO;
+        if (val != font->val_before) {
+            return font->NO;
+        }
+        font=font->next;
+    }
+    return -1;
+}
+void show_watchpoint(){
+    WP *font = head;
+    while (font != NULL) {
+        printf("wp:%d, %s, val = %d\n",font->NO,font->expr,font->val_before);
+        font=font->next;
+    }
+}

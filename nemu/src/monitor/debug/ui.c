@@ -55,13 +55,12 @@ static int cmd_si(char *args) {
 }
 
 static int cmd_info(char *args) {
-    printf("%s", args);
     char *arg = strtok(NULL, " ");
 
     if (strcmp(arg, "r") == 0) {
         isa_reg_display();
     } else if (strcmp(arg, "w") == 0) {
-        return 0;
+        show_watchpoint();
     } else {
         printf("args should be \'r\' or \'w\'\n");
         return 0;
@@ -85,12 +84,12 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_x(char *args) {
-    printf("%s\n", args);
+//    printf("%s\n", args);
     char tmp[256];
     strcpy(tmp, args);
     char *arg = strtok(NULL, " ");
 
-    printf("%s\n", tmp + strlen(arg) + 1);
+//    printf("%s\n", tmp + strlen(arg) + 1);
     bool succ = true;
     int padder = expr(tmp + strlen(arg) + 1, &succ);
     if(!succ){
@@ -112,8 +111,8 @@ static int cmd_w(char *args) {
     WP *watp = new_wp();
     bool succ = true;
     watp->val_before = expr(args, &succ);
-    free_wp(watp->NO);
     if (!succ) {
+        free_wp(watp->NO);
         printf("please check your watchpoint expr\n");
         return 0;
     }

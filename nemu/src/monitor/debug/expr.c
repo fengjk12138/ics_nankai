@@ -6,6 +6,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
+#include <memory/vaddr.h>
 
 enum {
     TK_NOTYPE = 256,
@@ -18,12 +19,15 @@ enum {
     /* TODO: Add more token types */
 
 };
+
+word_t vaddr_read(paddr_t, int);
+
 static int priori[5][2] = {
-        {TK_OR, TK_AND},
-        {TK_EQ, TK_NEQ},
-        {'+',   '-'},
-        {'*',   '/'},
-        {TK_NOT},
+        {TK_OR,  TK_AND},
+        {TK_EQ,  TK_NEQ},
+        {'+',    '-'},
+        {'*',    '/'},
+        {TK_NOT, TK_ACCESS},
 };
 
 static struct rule {
@@ -246,6 +250,13 @@ int eval(int l, int r, bool *success) {
             case '-':
                 return eval(l, result - 1, success) - eval(result + 1, r, success);
                 break;
+            case TK_ACCESS:
+                if (result != l) {
+                    *success = false;
+                    return 0;
+                }
+                return (int) vaddr_read(eval(result + 1, r, success), 4);
+                break;
             default:
                 printf("can not recognize this operator: %s", tokens[result].str);
                 *success = false;
@@ -255,6 +266,20 @@ int eval(int l, int r, bool *success) {
     return 0;
 }
 
+bool check_is_access(int no) {
+    if (tokens[no].type != '*')
+        return false;
+    if (no == 0)
+        return true;
+    if (tokens[no - 1].type == '+' || tokens[no - 1].type == '-' || tokens[no - 1].type == '*' ||
+        tokens[no - 1].type == '/' || tokens[no - 1].type == '(' ||
+        tokens[no - 1].type == TK_EQ || tokens[no - 1].type == TK_NEQ ||
+        tokens[no - 1].type == TK_B || tokens[no - 1].type == TK_BQ || tokens[no - 1].type == TK_S ||
+        tokens[no - 1].type == TK_SQ ||
+        tokens[no - 1].type == TK_AND || tokens[no - 1].type == TK_OR || tokens[no - 1].type == TK_NOT)
+        return true;
+    return false;
+}
 
 word_t expr(char *e, bool *success) {
 
@@ -263,9 +288,11 @@ word_t expr(char *e, bool *success) {
         return 0;
     }
     *success = true;
-    printf("%d\n", nr_token);
-    for (int i = 0; i < nr_token; i++)
-        printf("test %s\n", tokens[i].str);
+    for (int i = 0; i < nr_token; i++) {
+        if (check_is_access(i)) {
+            tokens[i].type = TK_ACCESS;
+        }
+    }
     /* TODO: Insert codes to evaluate the expression. */
     return eval(0, nr_token - 1, success);
 }
