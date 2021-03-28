@@ -92,7 +92,7 @@ static int cmd_x(char *args) {
 //    printf("%s\n", tmp + strlen(arg) + 1);
     bool succ = true;
     int padder = expr(tmp + strlen(arg) + 1, &succ);
-    if(!succ){
+    if (!succ) {
         printf("please check your scanf mem expr\n");
         return 0;
     }
@@ -126,8 +126,14 @@ static int cmd_d(char *args) {
         printf("please input which watchpoint you watch to delete\n");
         return 0;
     }
-
-
+    char *arg = strtok(NULL, " ");
+    int run_num = atoi(arg);
+    if (run_num == 0 && arg[0] != '0' && strlen(arg) != 1) {
+        printf("please input correct number\n");
+        return 0;
+    }
+    free_wp(run_num);
+    printf("%d has been removed\n", run_num);
     return 0;
 }
 
