@@ -22,9 +22,10 @@ enum {
 
 word_t vaddr_read(paddr_t, int);
 
-static int priori[5][2] = {
+static int priori[6][4] = {
         {TK_OR,  TK_AND},
         {TK_EQ,  TK_NEQ},
+        {TK_B,TK_SQ,TK_S,TK_BQ},
         {'+',    '-'},
         {'*',    '/'},
         {TK_NOT, TK_ACCESS},
@@ -184,7 +185,7 @@ int eval(int l, int r, bool *success) {
         return eval(l + 1, r - 1, success);
     } else {
         int result = -1;
-        for (int opt = 0; opt < 5; opt++) {
+        for (int opt = 0; opt < 6; opt++) {
             int bracket_cnt = 0;
             for (int i = r; i >= l; i--) {
                 if (tokens[i].type == '(') {
@@ -192,7 +193,7 @@ int eval(int l, int r, bool *success) {
                 } else if (tokens[i].type == ')') {
                     bracket_cnt++;
                 } else if (bracket_cnt == 0) {
-                    for (int j = 0; j < 2; j++)
+                    for (int j = 0; j < 4; j++)
                         if (priori[opt][j] != 0 && tokens[i].type == priori[opt][j]) {
                             result = i;
                             break;
