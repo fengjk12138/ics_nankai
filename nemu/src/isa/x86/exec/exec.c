@@ -18,8 +18,10 @@ static inline def_EHelper(gp1) {
         EMPTY(2)
         EMPTY(3)
         EMPTY(4)
-        EMPTY(5)
-        EMPTY(6)
+//        EMPTY(5)
+        EX(0b101, sub)
+//        EMPTY(6)
+        EX(0b110, xor)
         EMPTY(7)
     }
 }
@@ -112,6 +114,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
     s->opcode = opcode;
     switch (opcode) {
         EX(0x0f, 2byte_esc)
+        IDEX(0x31, G2E, xor)
         IDEX(0x50, r, push)
         IDEX(0x51, r, push)
         IDEX(0x52, r, push)
@@ -150,6 +153,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0xbf, mov_I2r, mov)
         IDEXW(0xc0, gp2_Ib2E, gp2, 1)
         IDEX(0xc1, gp2_Ib2E, gp2)
+        EX(0xc3, ret)
         IDEXW(0xc6, mov_I2E, mov, 1)
         IDEX(0xc7, mov_I2E, mov)
         IDEXW(0xd0, gp2_1_E, gp2, 1)

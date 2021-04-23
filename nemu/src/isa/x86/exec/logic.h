@@ -11,8 +11,9 @@ static inline def_EHelper(and) {
 }
 
 static inline def_EHelper(xor) {
-  TODO();
-  print_asm_template2(xor);
+//  TODO();
+    rtl_xor(s, ddest, ddest, dsrc1);
+    print_asm_template2(xor);
 }
 
 static inline def_EHelper(or) {

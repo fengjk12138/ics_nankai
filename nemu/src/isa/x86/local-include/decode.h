@@ -56,6 +56,7 @@ static inline def_DopHelper(SI) {
      */
 
     sword_t imm = instr_fetch(&s->seq_pc, op->width);
+//    printf("num is %x\n",imm);
     operand_imm(s, op, load_val, imm, op->width);
 //    TODO();
 }

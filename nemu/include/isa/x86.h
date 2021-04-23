@@ -34,16 +34,17 @@ typedef struct {
             rtlreg_t eax, ecx, edx, ebx, esp, ebp, esi, edi;
         };
     };
-  vaddr_t pc;
+    vaddr_t pc;
+    rtlreg_t eflags;
 } x86_CPU_state;
 
 // decode
 typedef struct {
-  bool is_operand_size_16;
-  uint8_t ext_opcode;
-  const rtlreg_t *mbase;
-  rtlreg_t mbr;
-  word_t moff;
+    bool is_operand_size_16;
+    uint8_t ext_opcode;
+    const rtlreg_t *mbase;
+    rtlreg_t mbr;
+    word_t moff;
 } x86_ISADecodeInfo;
 
 #define suffix_char(width) ((width) == 4 ? 'l' : ((width) == 1 ? 'b' : ((width) == 2 ? 'w' : '?')))

@@ -1,13 +1,18 @@
 #include "cc.h"
 
 static inline def_EHelper(add) {
-  TODO();
-  print_asm_template2(add);
+//    TODO();
+//    if(dsrc2->type==OP_TYPE_IMM)
+//        rtl_add(s, ddest, dsrc1, dsrc2);
+//    else
+
+    print_asm_template2(add);
 }
 
 static inline def_EHelper(sub) {
-  TODO();
-  print_asm_template2(sub);
+//  TODO();
+    rtl_sub(s, ddest, ddest, dsrc1);
+    print_asm_template2(sub);
 }
 
 static inline def_EHelper(cmp) {
