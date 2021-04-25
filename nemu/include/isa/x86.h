@@ -37,7 +37,27 @@ typedef struct {
     vaddr_t pc;
     rtlreg_t eflags;
 } x86_CPU_state;
+enum {
+    carry_flag = 0x01,
+    zero_flag = 0x02,
+    interrupt_flag = 0x04,
+    decimal_flag = 0x08,
+    break_flag = 0x10,
+    unused_flag = 0x20,
+    overflow_flag = 0x40,
+    negative_flag = 0x80
+};
 
+enum {
+    CF = 0,
+    ZF = 1,
+    IF = 2,
+    DF = 3,
+    BF = 4,
+    UF = 5,
+    OF = 6,
+    SF = 7
+};
 // decode
 typedef struct {
     bool is_operand_size_16;

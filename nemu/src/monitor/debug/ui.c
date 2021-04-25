@@ -79,7 +79,7 @@ static int cmd_p(char *args) {
         printf("please check your expr\n");
         return 0;
     }
-    printf("%d\n", result);
+    printf("%x\n", result);
     return 0;
 }
 

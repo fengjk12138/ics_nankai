@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <ctype.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -51,7 +52,7 @@ static struct rule {
         {">",           TK_B},
         {"<",           TK_S},
 
-        {"0x[0-9]*",    TK_HEX},
+        {"0x[0-9a-f]*",    TK_HEX},
         {"\\(",         '('},
         {"\\)",         ')'},
         {"[1-9][0-9]*", TK_DEC},
@@ -171,8 +172,9 @@ int eval(int l, int r, bool *success) {
     } else if (l == r) {
         if (tokens[l].type == TK_HEX) {
             int ret = 0, len = strlen(tokens[l].str);
-            for (int udp = 2; udp < len; udp++)
-                ret = ret * 16 + tokens[l].str[udp] - '0';
+            for (int udp = 2; udp < len; udp++){
+                ret = ret * 16 + (isdigit(tokens[l].str[udp])? tokens[l].str[udp]- '0':tokens[l].str[udp]-'a'+10);
+            }
             return ret;
         } else if (tokens[l].type == TK_DEC) {
             return atoi(tokens[l].str);

@@ -51,6 +51,7 @@ void isa_reg_display() {
     printf("$ebp = %x\n", cpu.ebp);
     printf("$esi = %x\n", cpu.esi);
     printf("$edi = %x\n", cpu.edi);
+    printf("$eflags = %x\n", cpu.eflags);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
@@ -78,6 +79,9 @@ word_t isa_reg_str2val(const char *s, bool *success) {
     } else if (strcmp("$edi", s) == 0) {
         *success = true;
         return cpu.edi;
+    } else if (strcmp("$eflags", s) == 0){
+        *success = true;
+        return cpu.eflags;
     } else {
         *success = false;
         return 0;

@@ -10,7 +10,8 @@ static inline def_EHelper(push) {
 }
 
 static inline def_EHelper(pop) {
-        TODO();
+//        TODO();
+        rtl_pop(s, ddest);
         print_asm_template1(pop);
 }
 
@@ -25,16 +26,27 @@ static inline def_EHelper(popa) {
 }
 
 static inline def_EHelper(leave) {
-        TODO();
+//        TODO();
+        cpu.esp = cpu.ebp;
+        rtl_pop(s, &cpu.ebp);
         print_asm("leave");
 }
 
 static inline def_EHelper(cltd) {
         if (s->isa.is_operand_size_16) {
-            TODO();
+            rtl_msb(s, s0, &cpu.eax, 2);
+            if(*s0)
+                rtl_ori(s, &cpu.edx, &cpu.edx, 0x0000ffffu);
+            else
+                rtl_andi(s, &cpu.edx, &cpu.edx, 0xffff0000u);
         }
         else {
-            TODO();
+//            TODO();
+            rtl_msb(s, s0, &cpu.eax, 4);
+            if(*s0)
+                rtl_li(s, &cpu.edx, 0xffffffffu);
+            else
+                rtl_li(s, &cpu.edx, 0);
         }
         print_asm(s->isa.is_operand_size_16 ? "cwtl" : "cltd");
 }
