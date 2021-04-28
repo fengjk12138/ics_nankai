@@ -6,16 +6,6 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-int printf(const char *fmt, ...) {
-    panic_on(1, "no support printf--------\n");
-    return 0;
-}
-
-int vsprintf(char *out, const char *fmt, va_list ap) {
-    panic_on(1, "no support vsprintf--------\n");
-    return 0;
-}
-
 char* itoa(int num,char* str,int radix)
 {
     char index[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";//索引表
@@ -55,6 +45,44 @@ char* itoa(int num,char* str,int radix)
     return str;//返回转换后的字符串
 
 }
+int printf(const char *fmt, ...) {
+    int cnt=0;
+    va_list ap;
+    va_start(ap, fmt);
+    while (*fmt) {
+        const char *tmp_char;
+        int tmp_int;
+        if (*fmt == '%') {
+            fmt++;
+            switch (*fmt) {
+                case 's':
+                    tmp_char = va_arg(ap, const char *);
+                    putstr(tmp_char);
+                    break;
+                case 'd':
+                    tmp_int = va_arg(ap, int);
+                    char tmp[22];
+                    itoa(tmp_int, tmp, 10);
+                    putstr(tmp);
+                    break;
+                default:
+                    return -1;
+            }
+            cnt++;
+        } else {
+           putch(*fmt);
+        }
+        fmt++;
+        cnt++;
+    }
+    return cnt;
+}
+
+int vsprintf(char *out, const char *fmt, va_list ap) {
+    panic_on(1, "no support vsprintf--------\n");
+    return 0;
+}
+
 
 
 int sprintf(char *out, const char *fmt, ...) {
