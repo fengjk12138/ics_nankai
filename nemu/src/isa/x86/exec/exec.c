@@ -188,14 +188,14 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0x01, G2E, add)
         IDEXW(0x02, E2G, add, 1)
         IDEX(0x03, E2G, add)
-        IDEXW(0x04, in_I2a, add, 1)
+        IDEXW(0x04, I2a, add, 1)
         IDEX(0x05, I2a, add)
 
         IDEXW(0x08, G2E, or, 1)
         IDEX(0x09, G2E, or)
         IDEXW(0x0a, E2G, or, 1)
         IDEX(0x0b, E2G, or)
-        IDEXW(0x0c, in_I2a, or, 1)
+        IDEXW(0x0c, I2a, or, 1)
         IDEX(0x0d, I2a, or)
 
         EX(0x0f, 2byte_esc)
@@ -205,33 +205,33 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEXW(0x12, E2G, adc, 1)
         IDEX(0x13, E2G, adc)
 
-        IDEXW(0x14, in_I2a, adc, 1)
+        IDEXW(0x14, I2a, adc, 1)
         IDEX(0x15, I2a, adc)
         IDEXW(0x18, G2E, sbb, 1)
         IDEX(0x19, G2E, sbb)
         IDEXW(0x1a, E2G, sbb, 1)
         IDEX(0x1b, E2G, sbb)
-        IDEXW(0x1c, in_I2a, sbb, 1)
+        IDEXW(0x1c, I2a, sbb, 1)
         IDEX(0x1d, I2a, sbb)
 
         IDEXW(0x20, G2E, and, 1)
         IDEX(0x21, G2E, and)
         IDEXW(0x22, E2G, and, 1)
         IDEX(0x23, E2G, and)
-        IDEXW(0x24, in_I2a, and, 1)
+        IDEXW(0x24, I2a, and, 1)
         IDEX(0x25, I2a, and)
 
         IDEXW(0x28, G2E, sub, 1)
         IDEX(0x29, G2E, sub)
         IDEXW(0x2a, E2G, sub, 1)
         IDEX(0x2b, E2G, sub)
-        IDEXW(0x2c, in_I2a, sub, 1)
+        IDEXW(0x2c, I2a, sub, 1)
         IDEX(0x2d, I2a, sub)
 
         IDEXW(0x30, G2E, xor, 1)
         IDEX(0x31, G2E, xor)
         IDEXW(0x32, E2G, xor, 1)
-        IDEXW(0x34, in_I2a, xor, 1)
+        IDEXW(0x34, I2a, xor, 1)
         IDEX(0x35, I2a, xor)
         IDEXW(0x38, G2E, cmp, 1)
         IDEX(0x39, G2E, cmp)
@@ -327,7 +327,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0xa3, a2O, mov)
 
 
-        IDEXW(0xa8, in_I2a, test, 1)
+        IDEXW(0xa8, I2a, test, 1)
         IDEX(0xa9, I2a, test)
 
 
@@ -361,9 +361,20 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
 
         IDEXW(0xe3, J, jcc, 1)
 
+        IDEXW(0xe4, in_I2a, in, 1)
+        IDEX(0xe5, in_I2a, in)
+        IDEXW(0xe6, out_a2I, out, 1)
+        IDEX(0xe7, out_a2I, out)
+
         IDEX(0xe8, J, call)
         IDEX(0xe9, J, jmp)
         IDEXW(0xeb, J, jmp, 1)
+
+        IDEXW(0xec, in_dx2a, in, 1)
+        IDEX(0xed, in_dx2a, in)
+        IDEXW(0xee, out_a2dx, out, 1)
+        IDEX(0xef, out_a2dx, out)
+
         IDEXW(0xf6, E, gp3, 1)
         IDEX(0xf7, E, gp3)
         IDEXW(0xfe, E, gp4, 1)
