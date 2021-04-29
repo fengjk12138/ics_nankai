@@ -12,6 +12,7 @@ static inline void set_width(DecodeExecState *s, int width) {
 
 /* 0x80, 0x81, 0x83 */
 static inline def_EHelper(gp1) {
+
     switch (s->isa.ext_opcode) {
 //        EMPTY(0)
         EX(0b000, add)
@@ -35,8 +36,10 @@ static inline def_EHelper(gp1) {
 /* 0xc0, 0xc1, 0xd0, 0xd1, 0xd2, 0xd3 */
 static inline def_EHelper(gp2) {
     switch (s->isa.ext_opcode) {
-        EMPTY(0)
-        EMPTY(1)
+//        EMPTY(0)
+        EX(0b000, rol)
+//        EMPTY(1)
+        EX(0b001, ror)
         EMPTY(2)
         EMPTY(3)
 //        EMPTY(4)
@@ -57,7 +60,8 @@ static inline def_EHelper(gp3) {
         EMPTY(1)
 //        EMPTY(2)
         EX(0b010, not)
-        EMPTY(3)
+//        EMPTY(3)
+        EX(0b011, neg)
 //        EMPTY(4)
         EX(0b100, mul)
 //        EMPTY(5)
@@ -165,6 +169,11 @@ static inline def_EHelper(2byte_esc) {
     IDEXW(0x9e, setcc_E, setcc, 1)
     IDEXW(0x9f, setcc_E, setcc, 1)
 
+
+    IDEX(0xa4, Ib_G2E, shld)
+    IDEX(0xa5, cl_G2E, shld)
+    IDEX(0xac, Ib_G2E, shrd)
+    IDEX(0xad, cl_G2E, shrd)
     IDEX(0xaf, E2G, imul2)
 
     IDEXW(0xb6, E2G, movzx, 1)
@@ -231,6 +240,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEXW(0x30, G2E, xor, 1)
         IDEX(0x31, G2E, xor)
         IDEXW(0x32, E2G, xor, 1)
+        IDEX(0x33, E2G, xor)
         IDEXW(0x34, I2a, xor, 1)
         IDEX(0x35, I2a, xor)
         IDEXW(0x38, G2E, cmp, 1)
