@@ -46,6 +46,8 @@ static inline def_EHelper(iret) {
 
 static inline def_EHelper(in) {
 //  TODO();
+
+//    printf("%d---- \n",id_dest -> width);
     switch(id_dest -> width){
         case 1:
             *ddest = pio_read_b(*dsrc1);
@@ -65,7 +67,9 @@ static inline def_EHelper(in) {
 
 static inline def_EHelper(out) {
 //  TODO();
+//    printf("%d----就这 \n",id_dest -> width);
     switch(id_dest -> width){
+
         case 1:
             pio_write_b(*ddest, *dsrc1);
             break;
