@@ -15,21 +15,21 @@ static inline def_EHelper(gp1) {
 
     switch (s->isa.ext_opcode) {
 //        EMPTY(0)
-        EX(0b000, add)
+        EXW(0b000, add, -1)
 //        EMPTY(1)
-        EX(0b001, or)
+        EXW(0b001, or, -1)
 //        EMPTY(2)
-        EX(0b010, adc)
+        EXW(0b010, adc, -1)
 //        EMPTY(3)
-        EX(0b011, sbb)
+        EXW(0b011, sbb, -1)
 //        EMPTY(4)
-        EX(0b100, and)
+        EXW(0b100, and, -1)
 //        EMPTY(5)
-        EX(0b101, sub)
+        EXW(0b101, sub, -1)
 //        EMPTY(6)
-        EX(0b110, xor)
+        EXW(0b110, xor, -1)
 //        EMPTY(7)
-        EX(0b111, cmp)
+        EXW(0b111, cmp, -1)
     }
 }
 
@@ -37,18 +37,18 @@ static inline def_EHelper(gp1) {
 static inline def_EHelper(gp2) {
     switch (s->isa.ext_opcode) {
 //        EMPTY(0)
-        EX(0b000, rol)
+        EXW(0b000, rol, -1)
 //        EMPTY(1)
-        EX(0b001, ror)
+        EXW(0b001, ror, -1)
         EMPTY(2)
         EMPTY(3)
 //        EMPTY(4)
-        EX(0b100, shl)
+        EXW(0b100, shl, -1)
 //        EMPTY(5)
-        EX(0b101, shr)
+        EXW(0b101, shr, -1)
         EMPTY(6)
 //        EMPTY(7)
-        EX(0b111, sar)
+        EXW(0b111, sar, -1)
     }
 }
 
@@ -56,20 +56,20 @@ static inline def_EHelper(gp2) {
 static inline def_EHelper(gp3) {
     switch (s->isa.ext_opcode) {
 //        EMPTY(0)
-        IDEXW(0b000, test_I, test, 1)
+        IDEXW(0b000, test_I, test, -1)
         EMPTY(1)
 //        EMPTY(2)
-        EX(0b010, not)
+        EXW(0b010, not, -1)
 //        EMPTY(3)
-        EX(0b011, neg)
+        EXW(0b011, neg, -1)
 //        EMPTY(4)
-        EX(0b100, mul)
+        EXW(0b100, mul, -1)
 //        EMPTY(5)
-        EX(0b101, imul1)
+        EXW(0b101, imul1, -1)
 //        EMPTY(6)
-        EX(0b110, div)
+        EXW(0b110, div, -1)
 //        EMPTY(7)
-        EX(0b111, idiv)
+        EXW(0b111, idiv, -1)
     }
 }
 
@@ -77,9 +77,9 @@ static inline def_EHelper(gp3) {
 static inline def_EHelper(gp4) {
     switch (s->isa.ext_opcode) {
 //        EMPTY(0)
-        EXW(0b000, inc, 1)
+        EXW(0b000, inc, -1)
 //        EMPTY(1)
-        EXW(0b001, dec, 1)
+        EXW(0b001, dec, -1)
         EMPTY(2)
         EMPTY(3)
         EMPTY(4)
@@ -93,19 +93,19 @@ static inline def_EHelper(gp4) {
 static inline def_EHelper(gp5) {
     switch (s->isa.ext_opcode) {
 //        EMPTY(0)
-        EX(0b000, inc)
+        EXW(0b000, inc, -1)
 //        EMPTY(1)
-        EX(0b001, dec)
+        EXW(0b001, dec, -1)
 //        EMPTY(2)
-        EX(0b010, call_rm)
+        EXW(0b010, call_rm, -1)
 //        EMPTY(3)
-        EX(0b011, call_rm)
+        EXW(0b011, call_rm, -1)
 //        EMPTY(4)
-        EX(0b100, jmp_rm)
+        EXW(0b100, jmp_rm, -1)
 //        EMPTY(5)
-        EX(0b101, jmp_rm)
+        EXW(0b101, jmp_rm, -1)
 //        EMPTY(6)
-        EX(0b110, push)
+        EXW(0b110, push, -1)
         EMPTY(7)
     }
 }
@@ -329,6 +329,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
 
         IDEX(0x8f, E, pop)
 
+        EX(0x98, cwtl)
         EX(0x99, cltd)
 
         IDEXW(0xa0, O2a, mov, 1)

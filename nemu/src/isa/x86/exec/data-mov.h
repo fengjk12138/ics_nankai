@@ -53,10 +53,18 @@ static inline def_EHelper(cltd) {
 
 static inline def_EHelper(cwtl) {
         if (s->isa.is_operand_size_16) {
-            TODO();
+            rtl_msb(s, s0, &cpu.eax, 1);
+            if(*s0)
+                rtl_ori(s, &cpu.eax, &cpu.eax, 0x0000ff00u);
+            else
+                rtl_andi(s, &cpu.eax, &cpu.eax, 0xffff00ffu);
         }
         else {
-            TODO();
+            rtl_msb(s, s0, &cpu.eax, 2);
+            if(*s0)
+                rtl_ori(s, &cpu.eax, &cpu.eax, 0xffff0000u);
+            else
+                rtl_andi(s, &cpu.eax, &cpu.eax, 0x0000ffffu);
         }
         print_asm(s->isa.is_operand_size_16 ? "cbtw" : "cwtl");
 }

@@ -67,7 +67,7 @@ static inline def_EHelper(in) {
 
 static inline def_EHelper(out) {
 //  TODO();
-//    printf("%d----就这 \n",id_dest -> width);
+
     switch(id_dest -> width){
 
         case 1:

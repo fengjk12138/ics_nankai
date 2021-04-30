@@ -12,15 +12,16 @@ static inline def_EHelper(test) {
 
 static inline def_EHelper(and) {
 //  TODO();
+
     rtl_set_OF(s, rz);
 
     rtl_set_CF(s, rz);
     rtl_and(s, ddest, ddest, dsrc1);
 
     rtl_update_ZFSF(s, ddest, id_dest->width);
-    printf("%x--\n",cpu.esp);
+
     operand_write(s, id_dest, ddest);
-    printf("%x--\n",cpu.esp);
+//    printf("%x--\n",cpu.esp);
     print_asm_template2(and);
 }
 
