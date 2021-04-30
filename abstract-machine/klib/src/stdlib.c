@@ -5,7 +5,7 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 static unsigned long int next = 1;
 extern Area heap;
-void *addr=NULL;
+static void *addr=NULL;
 int rand(void) {
     // RAND_MAX assumed to be 32767
     next = next * 1103515245 + 12345;
@@ -36,7 +36,6 @@ void *malloc(size_t size) {
     void* tmp=addr;
     addr += size;
     return tmp;
-//    return NULL;
 }
 
 void free(void *ptr) {
