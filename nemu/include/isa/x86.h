@@ -36,6 +36,8 @@ typedef struct {
     };
     vaddr_t pc;
     rtlreg_t eflags;
+    rtlreg_t cs;
+    rtlreg_t idtr;
 } x86_CPU_state;
 enum {
     carry_flag = 0x01,
