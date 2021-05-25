@@ -2,9 +2,11 @@
 #define ARCH_H__
 
 struct Context {
-  uintptr_t esi, ebx, eax, eip, edx, eflags, ecx, cs, esp, edi, ebp;
-  void *cr3;
-  int irq;
+    uintptr_t esp;
+    void *cr3;
+    uintptr_t edi, esi, ebp, ebx, edx, ecx, eax;
+    int irq;
+    uintptr_t eip, cs, eflags;
 };
 
 #define GPR1 eax

@@ -290,6 +290,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0x5f, r, pop)
 
         EX(0x60, pusha)
+        EX(0x61, popa)
 
         IDEX(0x68, push_SI, push)
         IDEX(0x69, I_E2G, imul3)
@@ -365,6 +366,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEXW(0xc6, mov_I2E, mov, 1)
         IDEX(0xc7, mov_I2E, mov)
         EX(0xc9, leave)
+        EX(0xcf, iret)
         IDEXW(0xcd, I, int, 1)
         IDEXW(0xd0, gp2_1_E, gp2, 1)
         IDEX(0xd1, gp2_1_E, gp2)
