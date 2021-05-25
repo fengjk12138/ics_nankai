@@ -43,15 +43,15 @@ void reg_test() {
 }
 
 void isa_reg_display() {
-    printf("$eax = %x\n", cpu.eax);
-    printf("$ebx = %x\n", cpu.ebx);
-    printf("$ecx = %x\n", cpu.ecx);
-    printf("$edx = %x\n", cpu.edx);
-    printf("$esp = %x\n", cpu.esp);
-    printf("$ebp = %x\n", cpu.ebp);
-    printf("$esi = %x\n", cpu.esi);
-    printf("$edi = %x\n", cpu.edi);
-    printf("$eflags = %x\n", cpu.eflags);
+    printf("$eax = 0x%x\n", cpu.eax);
+    printf("$ebx = 0x%x\n", cpu.ebx);
+    printf("$ecx = 0x%x\n", cpu.ecx);
+    printf("$edx = 0x%x\n", cpu.edx);
+    printf("$esp = 0x%x\n", cpu.esp);
+    printf("$ebp = 0x%x\n", cpu.ebp);
+    printf("$esi = 0x%x\n", cpu.esi);
+    printf("$edi = 0x%x\n", cpu.edi);
+    printf("$eflags = 0x%x\n", cpu.eflags);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {

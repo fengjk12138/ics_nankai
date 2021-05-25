@@ -16,7 +16,13 @@ static inline def_EHelper(pop) {
 }
 
 static inline def_EHelper(pusha) {
-        TODO();
+//        TODO();
+        rtl_push(s, &cpu.eax);
+        rtl_push(s, &cpu.ecx);
+        rtl_push(s, &cpu.edx);
+        rtl_push(s, &cpu.ebx);
+
+
         print_asm("pusha");
 }
 

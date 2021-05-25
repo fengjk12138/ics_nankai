@@ -79,7 +79,7 @@ static int cmd_p(char *args) {
         printf("please check your expr\n");
         return 0;
     }
-    printf("%x\n", result);
+    printf("0x%x\n", result);
     return 0;
 }
 
@@ -99,7 +99,7 @@ static int cmd_x(char *args) {
     int read_num = atoi(arg);
 
     for (int i = 0; i < read_num; i++)
-        printf("Mem = %x, Val = %x\n", padder + i * 4, (int) vaddr_read(padder + i * 4, 4));
+        printf("Mem = 0x%x, Val = 0x%x\n", padder + i * 4, (int) vaddr_read(padder + i * 4, 4));
     return 0;
 }
 
