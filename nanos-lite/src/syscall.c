@@ -15,15 +15,15 @@ int fs_read(int fd, void *buf, size_t count);
 
 int fs_write(int fd, const void *buf, size_t len);
 
-int sys_write(int fd, void *buf, size_t count) {
-    int cnt = 0;
-    for (int i = 0; i < count; i++) {
-        putch(*(char *) (buf + i));
-        cnt++;
-    }
-    return cnt;
+int sys_gettimeofday(unsigned int *tv,unsigned int *tz) {
+    tv[1] = io_read(AM_TIMER_UPTIME).us;
+    AM_TIMER_RTC_T rtc;
+    rtc = io_read(AM_TIMER_RTC);
+    tv[0] = rtc.second;
+    tz[0] = rtc.minute;
+    tz[1] = rtc.minute + 60;
+    return 1;
 }
-
 
 extern char end;
 
@@ -50,12 +50,7 @@ void do_syscall(Context *c) {
             c->GPRx = fs_read(a[1], (void *) a[2], a[3]);
             break;
         case SYS_write:
-            if (a[1] == FD_STDOUT || a[1] == FD_STDERR)
-                c->GPRx = sys_write(a[1], (void *) a[2], a[3]);
-            else if (a[1] == FD_STDIN)
-                panic("can't write to stdin");
-            else
-                c->GPRx = fs_write(a[1], (const void *) a[2], a[3]);
+            c->GPRx = fs_write(a[1], (const void *) a[2], a[3]);
             break;
         case SYS_close:
             c->GPRx = fs_close(a[1]);
@@ -67,7 +62,9 @@ void do_syscall(Context *c) {
             end = end + a[1];
             c->GPRx = 0;
             break;
-
+        case SYS_gettimeofday:
+            c->GPRx = sys_gettimeofday((void *)a[1], (void *)a[2]);
+            break;
         default:
             panic("Unhandled syscall ID = %d", a[0]);
     }
