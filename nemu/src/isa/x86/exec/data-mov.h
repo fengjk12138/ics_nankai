@@ -50,7 +50,7 @@ static inline def_EHelper(leave) {
 static inline def_EHelper(cltd) {
         if (s->isa.is_operand_size_16) {
             rtl_msb(s, s0, &cpu.eax, 2);
-            if(*s0)
+            if (*s0)
                 rtl_ori(s, &cpu.edx, &cpu.edx, 0x0000ffffu);
             else
                 rtl_andi(s, &cpu.edx, &cpu.edx, 0xffff0000u);
@@ -58,7 +58,7 @@ static inline def_EHelper(cltd) {
         else {
 //            TODO();
             rtl_msb(s, s0, &cpu.eax, 4);
-            if(*s0)
+            if (*s0)
                 rtl_li(s, &cpu.edx, 0xffffffffu);
             else
                 rtl_li(s, &cpu.edx, 0);
@@ -69,14 +69,14 @@ static inline def_EHelper(cltd) {
 static inline def_EHelper(cwtl) {
         if (s->isa.is_operand_size_16) {
             rtl_msb(s, s0, &cpu.eax, 1);
-            if(*s0)
+            if (*s0)
                 rtl_ori(s, &cpu.eax, &cpu.eax, 0x0000ff00u);
             else
                 rtl_andi(s, &cpu.eax, &cpu.eax, 0xffff00ffu);
         }
         else {
             rtl_msb(s, s0, &cpu.eax, 2);
-            if(*s0)
+            if (*s0)
                 rtl_ori(s, &cpu.eax, &cpu.eax, 0xffff0000u);
             else
                 rtl_andi(s, &cpu.eax, &cpu.eax, 0x0000ffffu);
@@ -101,4 +101,12 @@ static inline def_EHelper(lea) {
         rtl_addi(s, ddest, s->isa.mbase, s->isa.moff);
         operand_write(s, id_dest, ddest);
         print_asm_template2(lea);
+}
+
+static inline def_EHelper(movsb) {
+        rtl_lm(s, s0, &cpu.esi, 0, 1);
+        rtl_sm(s, &cpu.edi, 0, s0, 1);
+        cpu.esi+=1;
+        cpu.edi+=1;
+        print_asm_template2(movsb);
 }

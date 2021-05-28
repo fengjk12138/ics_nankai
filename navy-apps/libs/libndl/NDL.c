@@ -24,6 +24,7 @@ int NDL_PollEvent(char *buf, int len) {
 
 void NDL_OpenCanvas(int *w, int *h) {
     if (getenv("NWM_APP")) {
+        printf("就这\n");
         int fbctl = 4;
         fbdev = 5;
         screen_w = *w;
@@ -41,6 +42,14 @@ void NDL_OpenCanvas(int *w, int *h) {
         }
         close(fbctl);
     }
+    if (*w == 0 && *h == 0) {
+        FILE *fp = fopen("/proc/dispinfo", "r");
+        fscanf(fp, "WIDTH : %d\n HEIGHT : %d", w, h);
+        fclose(fp);
+    }
+    screen_h = *h;
+    screen_w = *w;
+    printf("%d %d\n", *w, *h);
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
