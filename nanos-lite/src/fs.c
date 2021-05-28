@@ -25,7 +25,11 @@ typedef struct {
 enum {
     FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB
 };
+
 size_t serial_write(const void *buf, size_t offset, size_t len);
+
+size_t events_read(void *buf, size_t offset, size_t len);
+
 size_t invalid_read(void *buf, size_t offset, size_t len) {
     panic("should not reach here");
     return 0;
@@ -41,6 +45,7 @@ static Finfo file_table[] __attribute__((used)) = {
         [FD_STDIN]  = {"stdin", 0, 0, invalid_read, invalid_write},
         [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
         [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
+        {"/dev/events", 0, 0, events_read, invalid_write},
 
 #include "files.h"
 };
@@ -61,9 +66,12 @@ int fs_open(const char *path, int flags, int mode) {
 }
 
 int fs_read(int fd, void *buf, size_t count) {
-    ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
+    int res = 0;
+    if (file_table[fd].write == NULL)
+        res = ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
+    else res = file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
     file_table[fd].open_offset += count;
-    return count;
+    return res;
 }
 
 int fs_write(int fd, const void *buf, size_t len) {

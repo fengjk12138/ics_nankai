@@ -10,14 +10,16 @@ static int screen_w = 0, screen_h = 0;
 
 uint32_t NDL_GetTicks() {
 //  return 0;
-    struct timeval tv,
-    struct timezone tz;
-    gettimeofday(&tv, &tz);
-    return tv.tv_usec / 1000;
+    uint32_t out[2];
+    gettimeofday(out, NULL);
+    return out[1] / 1000;
 }
 
 int NDL_PollEvent(char *buf, int len) {
-    return 0;
+    FILE *fp = fopen("/dev/events", "r");
+    int tmp = fread(buf, 1, len, fp) ? 1 : 0;
+    fclose(fp);
+    return tmp;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {

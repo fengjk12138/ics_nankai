@@ -10,8 +10,8 @@
   [AM_KEY_##key] = #key,
 
 static const char *keyname[256] __attribute__((used)) = {
-  [AM_KEY_NONE] = "NONE",
-  AM_KEYS(NAME)
+        [AM_KEY_NONE] = "NONE",
+        AM_KEYS(NAME)
 };
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
@@ -24,18 +24,23 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+    AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+    if (ev.keycode == AM_KEY_NONE)
+        return 0;
+    sprintf(buf, "k%s %s\n", keyname[ev.keycode], ev.keycode, ev.keydown ? "d" : "u");
+    printf("%s", buf);
+    return strlen(buf) + 1;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
-  return 0;
+    return 0;
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
-  return 0;
+    return 0;
 }
 
 void init_device() {
-  Log("Initializing devices...");
-  ioe_init();
+    Log("Initializing devices...");
+    ioe_init();
 }
