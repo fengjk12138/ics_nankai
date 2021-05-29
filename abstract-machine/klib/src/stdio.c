@@ -54,6 +54,7 @@ int printf(const char *fmt, ...) {
         int tmp_int;
         if (*fmt == '%') {
             fmt++;
+            char tmp[22];
             switch (*fmt) {
                 case 's':
                     tmp_char = va_arg(ap, const char *);
@@ -61,9 +62,22 @@ int printf(const char *fmt, ...) {
                     break;
                 case 'd':
                     tmp_int = va_arg(ap, int);
-                    char tmp[22];
                     itoa(tmp_int, tmp, 10);
                     putstr(tmp);
+                    break;
+                case 'x':
+                    tmp_int = va_arg(ap, int);
+                    itoa(tmp_int, tmp, 16);
+                    putstr(tmp);
+                    break;
+                case 'p':
+                    tmp_int = va_arg(ap, int);
+                    itoa(tmp_int, tmp, 16);
+                    putstr(tmp);
+                    break;
+                case 'c':
+                    tmp_int = va_arg(ap, int);
+                    putch(tmp_int);
                     break;
                 default:
                     return -1;
@@ -96,6 +110,7 @@ int sprintf(char *out, const char *fmt, ...) {
         int tmp_int;
         if (*fmt == '%') {
             fmt++;
+            char tmp[22];
             switch (*fmt) {
                 case 's':
                     tmp_char = va_arg(ap, const char *);
@@ -103,8 +118,21 @@ int sprintf(char *out, const char *fmt, ...) {
                     break;
                 case 'd':
                     tmp_int = va_arg(ap, int);
-                    char tmp[22];
                     strcat(out, itoa(tmp_int, tmp, 10));
+                    break;
+                case 'x':
+                    tmp_int = va_arg(ap, int);
+                    strcat(out, itoa(tmp_int, tmp, 16));
+                    break;
+                case 'p':
+                    tmp_int = va_arg(ap, int);
+                    strcat(out, itoa(tmp_int, tmp, 16));
+                    break;
+                case 'c':
+                    tmp_int = va_arg(ap, int);
+                    tmp[0]=tmp_int;
+                    tmp[1]='\0';
+                    strcat(out, tmp);
                     break;
                 default:
                     return -1;

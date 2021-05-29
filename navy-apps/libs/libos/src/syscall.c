@@ -65,12 +65,16 @@ int _write(int fd, void *buf, size_t count) {
     return _syscall_(SYS_write, fd, buf, count);
 }
 
+extern char _end;
+static void *program_break = &_end;
+
 void *_sbrk(intptr_t increment) {
-    extern char end;
-    void *tmp = (void *) end;
-    if (_syscall_(SYS_brk, increment, 0, 0) == 0)
+
+    void *tmp = program_break;
+    if (_syscall_(SYS_brk, (intptr_t) program_break + increment, 0, 0) == 0) {
+        program_break += increment;
         return tmp;
-    else
+    } else
         return (void *) -1;
 }
 
@@ -83,7 +87,6 @@ int _close(int fd) {
 }
 
 off_t _lseek(int fd, off_t offset, int whence) {
-
     return _syscall_(SYS_lseek, fd, offset, whence);
 }
 
