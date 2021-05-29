@@ -60,7 +60,7 @@ void init_fs() {
     // TODO: initialize the size of /dev/fb
     int w = io_read(AM_GPU_CONFIG).width;
     int h = io_read(AM_GPU_CONFIG).height;
-    int block_size = w * h;
+    int block_size = w * h*4;
     for (int i = 3; i < sizeof(file_table) / sizeof(Finfo); i++)
         if (strcmp(file_table[i].name, "/dev/fb") == 0) {
             file_table[i].size = block_size;

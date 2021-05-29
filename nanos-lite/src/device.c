@@ -40,19 +40,26 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 }
 
 size_t fb_write(const void *buf, size_t offset, size_t len) {
+//    printf("%d--- %d---\n", offset, len);
     int w = io_read(AM_GPU_CONFIG).width;
 //    int h = io_read(AM_GPU_CONFIG).height;
+//    printf("w=%d h=%d\n", w, h);
+
     int x, y;
-    if (offset % (w * 4) == 0)
-        y = offset / (w * 4) - 1, x = w - 1;
-    else x = offset % (w * 4) - 1, y = offset / (w * 4);
+    offset /= 4;
+    offset++;
+    if (offset % (w) == 0)
+        y = offset / (w) - 1, x = w - 1;
+    else x = offset % (w) - 1, y = offset / (w);
+//    printf("x=%d y=%d\n", x, y);
     for (int i = 0; i < len; i++) {
-        io_write(AM_GPU_FBDRAW, x, y, (void *)buf + i, 1, 1, false);
+        io_write(AM_GPU_FBDRAW, x, y, (void *) buf + i * 4, 1, 1, false);
         if (x == w - 1)
             x = 0, y++;
         else x++;
     }
     io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
+//    printf("write over\n");
     return len;
 }
 
