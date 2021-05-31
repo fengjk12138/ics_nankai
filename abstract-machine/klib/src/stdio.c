@@ -54,7 +54,7 @@ int printf(const char *fmt, ...) {
         int tmp_int;
         if (*fmt == '%') {
             fmt++;
-            char tmp[22];
+            char tmp[55];
             switch (*fmt) {
                 case 's':
                     tmp_char = va_arg(ap, const char *);
@@ -110,7 +110,7 @@ int sprintf(char *out, const char *fmt, ...) {
         int tmp_int;
         if (*fmt == '%') {
             fmt++;
-            char tmp[22];
+            char tmp[55];
             switch (*fmt) {
                 case 's':
                     tmp_char = va_arg(ap, const char *);

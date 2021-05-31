@@ -2,7 +2,8 @@
 #include <SDL_bmp.h>
 #include <stdio.h>
 #include <assert.h>
-
+#include<string.h>
+#include<stdlib.h>
 #define W 400
 #define H 300
 
@@ -47,12 +48,12 @@ void next(int rep) {
 int main() {
   SDL_Init(0);
   SDL_Surface *screen = SDL_SetVideoMode(W, H, 32, SDL_HWSURFACE);
-
   int rep = 0, g = 0;
 
   render();
 
   while (1) {
+//      printf("-az\n");
     SDL_Event e;
     SDL_WaitEvent(&e);
 

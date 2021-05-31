@@ -79,7 +79,6 @@ int main(int argc, char *argv[]) {
   screen = SDL_SetVideoMode(W, H, 32, SDL_HWSURFACE);
   SDL_FillRect(screen, NULL, 0);
   SDL_UpdateRect(screen, 0, 0, 0, 0);
-
   FILE *fp = fopen(MUSIC_PATH, "r");
   assert(fp);
   fseek(fp, 0, SEEK_END);

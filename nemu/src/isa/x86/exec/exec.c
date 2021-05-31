@@ -338,8 +338,8 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0xa1, O2a, mov)
         IDEXW(0xa2, a2O, mov, 1)
         IDEX(0xa3, a2O, mov)
-        EX(0xa4, movsb)
-
+        IDEX(0xa4, P2P, movsb)
+        IDEX(0xa5, P2P, movs)
         IDEXW(0xa8, I2a, test, 1)
         IDEX(0xa9, I2a, test)
 

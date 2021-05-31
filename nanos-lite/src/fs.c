@@ -60,7 +60,7 @@ void init_fs() {
     // TODO: initialize the size of /dev/fb
     int w = io_read(AM_GPU_CONFIG).width;
     int h = io_read(AM_GPU_CONFIG).height;
-    int block_size = w * h*4;
+    int block_size = w * h * 4;
     for (int i = 3; i < sizeof(file_table) / sizeof(Finfo); i++)
         if (strcmp(file_table[i].name, "/dev/fb") == 0) {
             file_table[i].size = block_size;
@@ -74,16 +74,21 @@ int fs_open(const char *path, int flags, int mode) {
             file_table[i].open_offset = 0;
             return i;
         }
+    Log("filename %s\n",path);
+    Log("filename %d\n",'-');
+    Log("filename %d\n",path[21]);
     panic("can't find this file");
     return -1;
 }
 
 int fs_read(int fd, void *buf, size_t count) {
     int res = 0;
-    if (file_table[fd].write == NULL)
+    if (file_table[fd].read == NULL) {
+        if (count + file_table[fd].open_offset >= file_table[fd].size)
+            count = file_table[fd].size - file_table[fd].open_offset;
         res = ramdisk_read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
-    else res = file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
-    file_table[fd].open_offset += count;
+    } else res = file_table[fd].read(buf, file_table[fd].disk_offset + file_table[fd].open_offset, count);
+    file_table[fd].open_offset += res;
     return res;
 }
 
