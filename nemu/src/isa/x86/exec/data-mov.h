@@ -103,22 +103,11 @@ static inline def_EHelper(lea) {
         print_asm_template2(lea);
 }
 
-static inline def_EHelper(movsb) {
-        rtl_lm(s, s0, dsrc1, 0, 1);
-        rtl_sm(s, ddest, 0, s0, 1);
-        rtl_addi(s, ddest, ddest, 1);
-        rtl_addi(s, dsrc1, dsrc1, 1);
-        operand_write(s, id_dest, ddest);
-        operand_write(s, id_src1, dsrc1);
-        print_asm_template1(movs);
-}
 
-static inline def_EHelper(movs) {
-        rtl_lm(s, s0, dsrc1, 0, id_src1->width);
+static inline def_EHelper(movsb) {
+        rtl_lm(s, s0, dsrc1, 0, id_dest->width);
         rtl_sm(s, ddest, 0, s0, id_dest->width);
-        rtl_addi(s, ddest, ddest, id_dest->width);
-        rtl_addi(s, dsrc1, dsrc1, id_src1->width);
-        operand_write(s, id_dest, ddest);
-        operand_write(s, id_src1, dsrc1);
-        print_asm_template1(movs);
+        cpu.esi+=id_dest->width;
+        cpu.edi+=id_dest->width;
+        print_asm_template1(movsb);
 }

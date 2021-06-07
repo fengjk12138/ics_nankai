@@ -11,8 +11,14 @@ int SDL_RemoveTimer(SDL_TimerID id) {
 }
 
 uint32_t SDL_GetTicks() {
-  return 0;
+    return NDL_GetTicks();
+    //printf("please implement me\n");
+    assert(0);
 }
 
 void SDL_Delay(uint32_t ms) {
+    int now = SDL_GetTicks();
+    while(SDL_GetTicks()-now < ms);
+    //printf("please implement me\n");
+    //assert(0);
 }

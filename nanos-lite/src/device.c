@@ -42,8 +42,7 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 size_t fb_write(const void *buf, size_t offset, size_t len) {
 //    printf("%d--- %d---\n", offset, len);
     int w = io_read(AM_GPU_CONFIG).width;
-//    int h = io_read(AM_GPU_CONFIG).height;
-//    printf("w=%d h=%d\n", w, h);
+
 
     int x, y;
     offset /= 4;
@@ -61,18 +60,6 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
     io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
 //    printf("write over\n");
     return len;
-
-
-//    offset /= sizeof(uint32_t); // 4 bytes per pixel
-//    int w = io_read(AM_GPU_CONFIG).width;
-//    int h = io_read(AM_GPU_CONFIG).height;
-//    int x = offset % w;
-//    int y = offset / w;
-//    if (offset + len > w * h * sizeof(uint32_t))
-//        len = w * h * sizeof(uint32_t) - offset;
-//    io_write(AM_GPU_FBDRAW, x, y, (void *)buf, len / sizeof(uint32_t), 1, true); // one line
-//
-//    return len;
 
 }
 

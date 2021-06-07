@@ -129,61 +129,61 @@ static inline def_EHelper(2byte_esc) {
     uint8_t opcode = instr_fetch(&s->seq_pc, 1);
     s->opcode = opcode;
     switch (opcode) {
-    /* TODO: Add more instructions!!! */
-    IDEX (0x01, gp7_E, gp7)
+        /* TODO: Add more instructions!!! */
+        IDEX (0x01, gp7_E, gp7)
 
 
-    IDEX(0x80, J, jcc)
-    IDEX(0x81, J, jcc)
-    IDEX(0x82, J, jcc)
-    IDEX(0x83, J, jcc)
-    IDEX(0x84, J, jcc)
-    IDEX(0x85, J, jcc)
-    IDEX(0x86, J, jcc)
-    IDEX(0x87, J, jcc)
-    IDEX(0x88, J, jcc)
-    IDEX(0x89, J, jcc)
-    IDEX(0x8a, J, jcc)
-    IDEX(0x8b, J, jcc)
-    IDEX(0x8c, J, jcc)
-    IDEX(0x8d, J, jcc)
-    IDEX(0x8e, J, jcc)
-    IDEX(0x8f, J, jcc)
+        IDEX(0x80, J, jcc)
+        IDEX(0x81, J, jcc)
+        IDEX(0x82, J, jcc)
+        IDEX(0x83, J, jcc)
+        IDEX(0x84, J, jcc)
+        IDEX(0x85, J, jcc)
+        IDEX(0x86, J, jcc)
+        IDEX(0x87, J, jcc)
+        IDEX(0x88, J, jcc)
+        IDEX(0x89, J, jcc)
+        IDEX(0x8a, J, jcc)
+        IDEX(0x8b, J, jcc)
+        IDEX(0x8c, J, jcc)
+        IDEX(0x8d, J, jcc)
+        IDEX(0x8e, J, jcc)
+        IDEX(0x8f, J, jcc)
 
 
 
 
-    IDEXW(0x90, setcc_E, setcc, 1)
-    IDEXW(0x91, setcc_E, setcc, 1)
-    IDEXW(0x92, setcc_E, setcc, 1)
-    IDEXW(0x93, setcc_E, setcc, 1)
-    IDEXW(0x94, setcc_E, setcc, 1)
-    IDEXW(0x95, setcc_E, setcc, 1)
-    IDEXW(0x96, setcc_E, setcc, 1)
-    IDEXW(0x97, setcc_E, setcc, 1)
-    IDEXW(0x98, setcc_E, setcc, 1)
-    IDEXW(0x99, setcc_E, setcc, 1)
-    IDEXW(0x9a, setcc_E, setcc, 1)
-    IDEXW(0x9b, setcc_E, setcc, 1)
-    IDEXW(0x9c, setcc_E, setcc, 1)
-    IDEXW(0x9d, setcc_E, setcc, 1)
-    IDEXW(0x9e, setcc_E, setcc, 1)
-    IDEXW(0x9f, setcc_E, setcc, 1)
+        IDEXW(0x90, setcc_E, setcc, 1)
+        IDEXW(0x91, setcc_E, setcc, 1)
+        IDEXW(0x92, setcc_E, setcc, 1)
+        IDEXW(0x93, setcc_E, setcc, 1)
+        IDEXW(0x94, setcc_E, setcc, 1)
+        IDEXW(0x95, setcc_E, setcc, 1)
+        IDEXW(0x96, setcc_E, setcc, 1)
+        IDEXW(0x97, setcc_E, setcc, 1)
+        IDEXW(0x98, setcc_E, setcc, 1)
+        IDEXW(0x99, setcc_E, setcc, 1)
+        IDEXW(0x9a, setcc_E, setcc, 1)
+        IDEXW(0x9b, setcc_E, setcc, 1)
+        IDEXW(0x9c, setcc_E, setcc, 1)
+        IDEXW(0x9d, setcc_E, setcc, 1)
+        IDEXW(0x9e, setcc_E, setcc, 1)
+        IDEXW(0x9f, setcc_E, setcc, 1)
 
 
-    IDEX(0xa4, Ib_G2E, shld)
-    IDEX(0xa5, cl_G2E, shld)
-    IDEX(0xac, Ib_G2E, shrd)
-    IDEX(0xad, cl_G2E, shrd)
-    IDEX(0xaf, E2G, imul2)
+        IDEX(0xa4, Ib_G2E, shld)
+        IDEX(0xa5, cl_G2E, shld)
+        IDEX(0xac, Ib_G2E, shrd)
+        IDEX(0xad, cl_G2E, shrd)
+        IDEX(0xaf, E2G, imul2)
 
-    IDEXW(0xb6, E2G, movzx, 1)
-    IDEXW(0xb7, E2G, movzx, 2)
-    IDEXW(0xbe, E2G, movsx, 1)
-    IDEXW(0xbf, E2G, movsx, 2)
+        IDEXW(0xb6, E2G, movzx, 1)
+        IDEXW(0xb7, E2G, movzx, 2)
+        IDEXW(0xbe, E2G, movsx, 1)
+        IDEXW(0xbf, E2G, movsx, 2)
 
-    default:
-    exec_inv(s);
+        default:
+        exec_inv(s);
     }
 }
 
@@ -316,7 +316,6 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEXW(0x7f, J, jcc, 1)
 
 
-
         IDEXW(0x80, I2E, gp1, 1)
         IDEX(0x81, I2E, gp1)
         IDEX(0x83, SI2E, gp1)
@@ -338,8 +337,8 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0xa1, O2a, mov)
         IDEXW(0xa2, a2O, mov, 1)
         IDEX(0xa3, a2O, mov)
-        IDEX(0xa4, P2P, movsb)
-        IDEX(0xa5, P2P, movs)
+        IDEXW(0xa4, P2P, movsb, 1)
+        IDEX(0xa5, P2P, movsb)
         IDEXW(0xa8, I2a, test, 1)
         IDEX(0xa9, I2a, test)
 
@@ -367,7 +366,8 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0xc7, mov_I2E, mov)
         EX(0xc9, leave)
         EX(0xcf, iret)
-        IDEXW(0xcd, I, int, 1)
+        IDEXW(0xcd, I,
+        int, 1)
         IDEXW(0xd0, gp2_1_E, gp2, 1)
         IDEX(0xd1, gp2_1_E, gp2)
         IDEXW(0xd2, gp2_cl2E, gp2, 1)

@@ -75,8 +75,6 @@ int fs_open(const char *path, int flags, int mode) {
             return i;
         }
     Log("filename %s\n",path);
-    Log("filename %d\n",'-');
-    Log("filename %d\n",path[21]);
     panic("can't find this file");
     return -1;
 }
