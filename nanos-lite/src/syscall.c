@@ -5,6 +5,8 @@ enum {
     FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB
 };
 
+void naive_uload(void *pcb, const char *filename);
+
 int fs_open(const char *path, int flags, int mode);
 
 int fs_lseek(int fd, size_t offset, int whence);
@@ -33,7 +35,6 @@ void do_syscall(Context *c) {
     a[2] = c->GPR3;
     a[3] = c->GPR4;
     switch (a[0]) {
-
         case SYS_exit:
             halt(a[1]);
             break;
@@ -57,8 +58,10 @@ void do_syscall(Context *c) {
             c->GPRx = fs_lseek(a[1], a[2], a[3]);
             break;
         case SYS_brk:
-//            end = a[1];
             c->GPRx = 0;
+            break;
+        case SYS_execve:
+            naive_uload(NULL, (void *)a[1]);
             break;
         case SYS_gettimeofday:
             c->GPRx = sys_gettimeofday((void *) a[1], (void *) a[2]);
