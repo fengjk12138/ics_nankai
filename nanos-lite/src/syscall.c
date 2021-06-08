@@ -5,6 +5,8 @@ enum {
     FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB
 };
 
+Context *schedule(Context *prev);
+
 void naive_uload(void *pcb, const char *filename);
 
 int fs_open(const char *path, int flags, int mode);
@@ -39,8 +41,8 @@ void do_syscall(Context *c) {
             halt(a[1]);
             break;
         case SYS_yield:
-            c->GPRx = 0;
             yield();
+            c->GPRx = 0;
             break;
         case SYS_open:
             c->GPRx = fs_open((const char *) a[1], a[2], a[3]);
@@ -61,7 +63,7 @@ void do_syscall(Context *c) {
             c->GPRx = 0;
             break;
         case SYS_execve:
-            naive_uload(NULL, (void *)a[1]);
+            naive_uload(NULL, (void *) a[1]);
             break;
         case SYS_gettimeofday:
             c->GPRx = sys_gettimeofday((void *) a[1], (void *) a[2]);
