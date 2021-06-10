@@ -9,6 +9,8 @@ Context *schedule(Context *prev);
 
 void naive_uload(void *pcb, const char *filename);
 
+void context_uload(PCB *start, const char *filename, char *const argv[], char *const envp[]);
+
 int fs_open(const char *path, int flags, int mode);
 
 int fs_lseek(int fd, size_t offset, int whence);
@@ -63,7 +65,8 @@ void do_syscall(Context *c) {
             c->GPRx = 0;
             break;
         case SYS_execve:
-            naive_uload(NULL, (void *) a[1]);
+//            naive_uload(NULL, (void *) a[1]);
+            context_uload(, (void *) a[1], (void *) a[2], (void *) a[3]);
             break;
         case SYS_gettimeofday:
             c->GPRx = sys_gettimeofday((void *) a[1], (void *) a[2]);

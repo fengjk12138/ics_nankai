@@ -32,6 +32,8 @@ int fs_read(int fd, void *buf, size_t count);
 
 int fs_write(int fd, const void *buf, size_t len);
 
+void *new_page(size_t nr_page);
+
 static uintptr_t loader(PCB *pcb, const char *filename) {
 //  TODO();
     int file = fs_open(filename, 0, 0);
@@ -62,49 +64,59 @@ void naive_uload(PCB *pcb, const char *filename) {
     ((void (*)()) entry)();
 }
 
-void context_uload(PCB *start, const char *filename, int argc, int envc, char *const argv[], char *const envp[]) {
+void context_uload(PCB *start, const char *filename, char *const argv[], char *const envp[]) {
     Area ar;
     ar.start = start->stack;
     ar.end = (start->stack + sizeof(PCB));
-//    int argc = sizeof(argv) / sizeof(char *);
+    int argc = 0;
+    int envc = 0;
+    for (argc = 0;; argc++)
+        if (argv[argc] == NULL)
+            break;
+    for (envc = 0;; argc++)
+        if (envp[envc] == NULL)
+            break;
 //    int envc = sizeof(argv) / sizeof(char *);
     int tot_size = 0;
     char *tmp1[128], *tmp2[128];
 
+    void *user_stack=new_page(8);
+    user_stack+=8*PGSIZE;
+
     for (int i = envc - 1; i >= 0; i--) {
-        strcpy(heap.end - strlen(envp[i]) - 1 - tot_size, envp[i]);
-        tmp1[i] = heap.end - strlen(envp[i]) - 1 - tot_size;
+        strcpy(user_stack - strlen(envp[i]) - 1 - tot_size, envp[i]);
+        tmp1[i] = user_stack - strlen(envp[i]) - 1 - tot_size;
         tot_size += strlen(envp[i]) + 1;
 
     }
 //    printf("%d\n", strlen(argv[0]));
     for (int i = argc - 1; i >= 0; i--) {
-        strcpy(heap.end - strlen(argv[i]) - 1 - tot_size, argv[i]);
-        tmp2[i] = heap.end - strlen(argv[i]) - 1 - tot_size;
+        strcpy(user_stack - strlen(argv[i]) - 1 - tot_size, argv[i]);
+        tmp2[i] = user_stack - strlen(argv[i]) - 1 - tot_size;
         tot_size += strlen(argv[i]) + 1;
     }
 
-    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) NULL;
+    *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = (uintptr_t) NULL;
     tot_size += sizeof(uintptr_t);
     for (int i = envc - 1; i >= 0; i--) {
-        *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) tmp1[i];
+        *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = (uintptr_t) tmp1[i];
         tot_size += sizeof(uintptr_t);
     }
-    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) NULL;
+    *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = (uintptr_t) NULL;
     tot_size += sizeof(uintptr_t);
     for (int i = argc - 1; i >= 0; i--) {
-        *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) tmp2[i];
+        *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = (uintptr_t) tmp2[i];
         tot_size += sizeof(uintptr_t);
     }
-    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = argc;
+    *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = argc;
     tot_size += sizeof(uintptr_t);
-    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) =(uintptr_t) (heap.end - tot_size);
+    *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = (uintptr_t)(user_stack - tot_size);
     tot_size += sizeof(uintptr_t);
 
     start->cp = ucontext(NULL, ar, (void *) loader(NULL, filename));
-    ((Context * )(start->cp))->eax = (uintptr_t)(heap.end - tot_size);
+    ((Context * )(start->cp))->eax = (uintptr_t)(user_stack - tot_size);
 
-//    printf("size=%d %x %p\n",tot_size,((Context * )(start->cp))->eax, heap.end - tot_size);
+//    printf("size=%d %x %p\n",tot_size,((Context * )(start->cp))->eax, user_stack - tot_size);
 
 }
 

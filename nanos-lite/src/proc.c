@@ -4,7 +4,7 @@
 
 void naive_uload(PCB *, const char *);
 
-void context_uload(PCB *start, const char *filename, int argc, int envc, char *const argv[], char *const envp[]);
+void context_uload(PCB *start, const char *filename, char *const argv[], char *const envp[]);
 
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
@@ -35,9 +35,9 @@ void context_kload(PCB *start, void (*entry)(void *), void *argc) {
 
 void init_proc() {
 //    context_kload(&pcb[0], hello_fun, "12");
-    char *argv[] = {"--skip","--dd"};
+    char *argv[] = {"--skip", "--dd", NULL};
     char *empty[] = {NULL};
-    context_uload(&pcb[0], "/bin/hello", sizeof(argv) / sizeof(char *), 0, argv, empty);
+    context_uload(&pcb[0], "/bin/hello", argv, empty);
     switch_boot_pcb();
 
     Log("Initializing processes...");
