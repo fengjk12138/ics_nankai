@@ -67,7 +67,7 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
     save.eip = (uintptr_t) entry;
 //    save.eax = (uintptr_t) arg;
     save.cs = 8;
-    save.eax = (uintptr_t) heap.end;
+
     *(Context * )(kstack.end - sizeof(Context)) = save;
 //    *(uintptr_t * )(kstack.end - sizeof(uintptr_t)) = (uintptr_t) arg;
     return kstack.end - sizeof(Context);

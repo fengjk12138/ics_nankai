@@ -3,7 +3,9 @@
 #define MAX_NR_PROC 4
 
 void naive_uload(PCB *, const char *);
-void context_uload(PCB *start, const char *filename);
+
+void context_uload(PCB *start, const char *filename, int argc, int envc, char *const argv[], char *const envp[]);
+
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
@@ -31,10 +33,11 @@ void context_kload(PCB *start, void (*entry)(void *), void *argc) {
 }
 
 
-
 void init_proc() {
-    context_kload(&pcb[0], hello_fun, "12");
-    context_uload(&pcb[1], "/bin/bird");
+//    context_kload(&pcb[0], hello_fun, "12");
+    char *argv[] = {"--skip","--dd"};
+    char *empty[] = {NULL};
+    context_uload(&pcb[0], "/bin/hello", sizeof(argv) / sizeof(char *), 0, argv, empty);
     switch_boot_pcb();
 
     Log("Initializing processes...");
@@ -49,8 +52,8 @@ Context *schedule(Context *prev) {
 //    pcb[0]=*current;
 
 // always select pcb[0] as the new process
-    current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-//    current = &pcb[0];
+//    current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+    current = &pcb[0];
 //    printf("-------\n");
 // then return the new context
     return current->cp;

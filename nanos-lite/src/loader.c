@@ -1,6 +1,7 @@
 #include <proc.h>
 #include <elf.h>
 #include <fs.h>
+
 #ifdef __LP64__
 # define Elf_Ehdr Elf64_Ehdr
 # define Elf_Phdr Elf64_Phdr
@@ -61,10 +62,49 @@ void naive_uload(PCB *pcb, const char *filename) {
     ((void (*)()) entry)();
 }
 
-void context_uload(PCB *start, const char *filename) {
+void context_uload(PCB *start, const char *filename, int argc, int envc, char *const argv[], char *const envp[]) {
     Area ar;
     ar.start = start->stack;
     ar.end = (start->stack + sizeof(PCB));
-    start->cp = ucontext(NULL, ar, (void *)loader(NULL, filename));
+//    int argc = sizeof(argv) / sizeof(char *);
+//    int envc = sizeof(argv) / sizeof(char *);
+    int tot_size = 0;
+    char *tmp1[128], *tmp2[128];
+
+    for (int i = envc - 1; i >= 0; i--) {
+        strcpy(heap.end - strlen(envp[i]) - 1 - tot_size, envp[i]);
+        tmp1[i] = heap.end - strlen(envp[i]) - 1 - tot_size;
+        tot_size += strlen(envp[i]) + 1;
+
+    }
+//    printf("%d\n", strlen(argv[0]));
+    for (int i = argc - 1; i >= 0; i--) {
+        strcpy(heap.end - strlen(argv[i]) - 1 - tot_size, argv[i]);
+        tmp2[i] = heap.end - strlen(argv[i]) - 1 - tot_size;
+        tot_size += strlen(argv[i]) + 1;
+    }
+
+    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) NULL;
+    tot_size += sizeof(uintptr_t);
+    for (int i = envc - 1; i >= 0; i--) {
+        *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) tmp1[i];
+        tot_size += sizeof(uintptr_t);
+    }
+    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) NULL;
+    tot_size += sizeof(uintptr_t);
+    for (int i = argc - 1; i >= 0; i--) {
+        *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = (uintptr_t) tmp2[i];
+        tot_size += sizeof(uintptr_t);
+    }
+    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) = argc;
+    tot_size += sizeof(uintptr_t);
+    *(uintptr_t * )(heap.end - tot_size - sizeof(uintptr_t)) =(uintptr_t) (heap.end - tot_size);
+    tot_size += sizeof(uintptr_t);
+
+    start->cp = ucontext(NULL, ar, (void *) loader(NULL, filename));
+    ((Context * )(start->cp))->eax = (uintptr_t)(heap.end - tot_size);
+
+//    printf("size=%d %x %p\n",tot_size,((Context * )(start->cp))->eax, heap.end - tot_size);
+
 }
 
