@@ -16,7 +16,7 @@ void switch_boot_pcb() {
 void hello_fun(void *arg) {
     int j = 1;
     while (1) {
-        Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t) arg, j);
+        Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", arg, j);
         j++;
         yield();
     }
@@ -26,13 +26,13 @@ void context_kload(PCB *start, void (*entry)(void *), void *argc) {
     Area ar;
     ar.start = start->stack;
     ar.end = (start->stack + sizeof(PCB));
-    start->cp =kcontext(ar, entry, argc);
+    start->cp = kcontext(ar, entry, argc);
 
 }
 
 void init_proc() {
-    context_kload(&pcb[0], hello_fun, NULL);
-
+    context_kload(&pcb[0], hello_fun, "12");
+    context_kload(&pcb[1], hello_fun, "12138");
     switch_boot_pcb();
 
     Log("Initializing processes...");
@@ -43,11 +43,13 @@ void init_proc() {
 
 Context *schedule(Context *prev) {
 // save the context pointer
-    current->cp = prev;
+    current->cp = prev;//没看懂，待定
 //    pcb[0]=*current;
 
 // always select pcb[0] as the new process
-    current = &pcb[0];
+    current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+//    current = &pcb[0];
+//    printf("-------\n");
 // then return the new context
     return current->cp;
 }
