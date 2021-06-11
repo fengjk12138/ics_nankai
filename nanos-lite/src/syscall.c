@@ -75,8 +75,8 @@ void do_syscall(Context *c) {
                 context_uload(current, (void *) a[1], (void *) a[2], (void *) a[3]);
                 switch_boot_pcb();
                 yield();
-                break;
             }
+            break;
         case SYS_gettimeofday:
             c->GPRx = sys_gettimeofday((void *) a[1], (void *) a[2]);
             break;
