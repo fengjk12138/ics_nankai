@@ -9,6 +9,7 @@ extern char **environ;
 void call_main(uintptr_t *args) {
     char *empty[] = {NULL};
     int argc = *args;
+
     char **argv = malloc(argc * sizeof(char *));
     args++;
     for (int i = 0; i < argc; i++) {

@@ -73,7 +73,7 @@ void context_uload(PCB *start, const char *filename, char *const argv[], char *c
     for (argc = 0;; argc++)
         if (argv[argc] == NULL)
             break;
-    for (envc = 0;; argc++)
+    for (envc = 0;; envc++)
         if (envp[envc] == NULL)
             break;
 //    int envc = sizeof(argv) / sizeof(char *);

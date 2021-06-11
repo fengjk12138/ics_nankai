@@ -4,12 +4,12 @@
 enum {
     FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB
 };
-
+extern void *current;
 Context *schedule(Context *prev);
 
 void naive_uload(void *pcb, const char *filename);
 
-void context_uload(PCB *start, const char *filename, char *const argv[], char *const envp[]);
+void context_uload(void *start, const char *filename, char *const argv[], char *const envp[]);
 
 int fs_open(const char *path, int flags, int mode);
 
@@ -20,6 +20,8 @@ int fs_close(int fd);
 int fs_read(int fd, void *buf, size_t count);
 
 int fs_write(int fd, const void *buf, size_t len);
+
+void switch_boot_pcb();
 
 int sys_gettimeofday(unsigned int *tv, unsigned int *tz) {
     tv[1] = io_read(AM_TIMER_UPTIME).us;
@@ -66,7 +68,9 @@ void do_syscall(Context *c) {
             break;
         case SYS_execve:
 //            naive_uload(NULL, (void *) a[1]);
-            context_uload(, (void *) a[1], (void *) a[2], (void *) a[3]);
+            context_uload(current, (void *) a[1], (void *) a[2], (void *) a[3]);
+            switch_boot_pcb();
+            yield();
             break;
         case SYS_gettimeofday:
             c->GPRx = sys_gettimeofday((void *) a[1], (void *) a[2]);

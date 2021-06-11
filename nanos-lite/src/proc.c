@@ -35,25 +35,26 @@ void context_kload(PCB *start, void (*entry)(void *), void *argc) {
 
 void init_proc() {
 //    context_kload(&pcb[0], hello_fun, "12");
-    char *argv[] = {"--skip", "--dd", NULL};
+    char *argv[] = {"/bin/hello",NULL};
     char *empty[] = {NULL};
-    context_uload(&pcb[0], "/bin/hello", argv, empty);
+    context_uload(&pcb[0], "/bin/exec-test", argv, empty);
     switch_boot_pcb();
 
     Log("Initializing processes...");
 
     // load program here
-//    naive_uload(NULL, "/bin/menu");
+//    naive_uload(NULL, "/bin/exec-test");
 }
 
 Context *schedule(Context *prev) {
 // save the context pointer
-    current->cp = prev;//没看懂，待定
+    current->cp = prev;
 //    pcb[0]=*current;
 
 // always select pcb[0] as the new process
 //    current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
     current = &pcb[0];
+//    printf("cp===%p\n",current->cp);
 //    printf("-------\n");
 // then return the new context
     return current->cp;
