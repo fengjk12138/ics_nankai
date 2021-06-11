@@ -74,9 +74,10 @@ int fs_open(const char *path, int flags, int mode) {
             file_table[i].open_offset = 0;
             return i;
         }
-    Log("filename %s\n",path);
-    panic("can't find this file");
-    return -1;
+
+    Log("filename %s not found\n",path);
+//    panic("can't find this file");
+    return -2;
 }
 
 int fs_read(int fd, void *buf, size_t count) {

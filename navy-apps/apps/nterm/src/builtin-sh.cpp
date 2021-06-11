@@ -22,15 +22,38 @@ static void sh_prompt() {
     sh_printf("sh> ");
 }
 
+bool is_whitechar(char x) {
+    return x == '\t' || x == ' ' || x == '\n' || x == '\f' || x == '\0';
+}
+
 static void sh_handle_cmd(const char *cmd) {
     setenv("PATH", "/bin", 0);
-    char *empty[] = {NULL};
-//    int len=strlen(cmd);
-//    for(int i=len-1;i>=0;i--)
-//        if(cmd[i]=='\t'||cmd[i]==' '||cmd[i]=='\n'||cmd[i]=='\f'||cmd[i]=='\0')
-//            cmd[i]='\0';
-//        else break;
-    execvp(cmd, empty);
+    char *empty[128];
+    int len = strlen(cmd);
+    char *new_cmd = (char *) malloc(len * sizeof(char));
+    int now = 0;
+    for (int i = 0; i < len; i++, now++)
+        if (is_whitechar(cmd[i])) {
+            new_cmd[i] = '\0';
+            break;
+        } else new_cmd[i] = cmd[i];
+    while (is_whitechar(cmd[now]) && now < len)
+        now++;
+    int argc = 0;
+    while (now < len) {
+        if (!is_whitechar(cmd[now])) {
+            argc++;
+            empty[argc - 1] = (char *) malloc(32 * sizeof(char));
+            int ar_len = 0;
+            for (; !is_whitechar(cmd[now]); now++)
+                empty[argc - 1][ar_len++] = cmd[now];
+            empty[argc - 1][ar_len] = '\0';
+        }
+        now++;
+    }
+    empty[argc] = NULL;
+
+    execvp(new_cmd, empty);
 }
 
 void builtin_sh_run() {
