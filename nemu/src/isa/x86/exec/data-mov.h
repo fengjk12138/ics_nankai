@@ -102,7 +102,27 @@ static inline def_EHelper(lea) {
         operand_write(s, id_dest, ddest);
         print_asm_template2(lea);
 }
+static inline def_EHelper(mov_G2cr){
+//        printf("src=%x reg=%d\n", *dsrc1, id_dest->reg);
+        if (id_dest->reg==0)
+            cpu.cr0=*dsrc1;
+        else if (id_dest->reg==3)
+            cpu.cr3=(uintptr_t)(*dsrc1);
+        else assert(0);
 
+        print_asm_template2(mov_G2cr);
+//        printf("----\n");
+}
+
+static inline def_EHelper(mov_cr2G){
+        if (id_src1->reg==0)
+        *ddest=cpu.cr0;
+        else if (id_src1->reg==3)
+        *ddest=(rtlreg_t)cpu.cr3;
+        else assert(0);
+        operand_write(s, id_dest, ddest);
+        print_asm_template2(mov_cr2G);
+}
 
 static inline def_EHelper(movsb) {
         rtl_lm(s, s0, dsrc1, 0, id_dest->width);
