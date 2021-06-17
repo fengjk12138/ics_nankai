@@ -11,6 +11,8 @@ int isa_vaddr_check(vaddr_t vaddr, int type, int len) {
 
 uintptr_t get_page(vaddr_t vaddr) {
     uintptr_t page_dir = paddr_read(cpu.cr3 + (vaddr >> 22) * 4, 4);
+    if(page_dir==0)
+        printf("invaild=%x\n",vaddr);
     assert(page_dir!=0);
     uintptr_t pg_base = paddr_read(page_dir + ((vaddr >> 12) & 0x3ff) * 4, 4);
 //    printf("pgbase=%x\n",vaddr);

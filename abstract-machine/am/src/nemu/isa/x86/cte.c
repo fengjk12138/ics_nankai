@@ -69,7 +69,7 @@ bool cte_init(Context *(*handler)(Event, Context *)) {
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
     Context save;
     save.eip = (uintptr_t) entry;
-//    save.eax = (uintptr_t) arg;
+    save.cr3 = NULL;
     save.cs = 8;
     *(Context * )(kstack.end - sizeof(Context) - 2 * sizeof(uintptr_t)) = save;
     *(uintptr_t * )(kstack.end - sizeof(uintptr_t)) = (uintptr_t) arg;

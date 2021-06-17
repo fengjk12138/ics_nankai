@@ -26,17 +26,17 @@ void init_mem() {
 }
 
 static inline bool in_pmem(paddr_t addr) {
-    return (PMEM_BASE <= addr) && (addr <= PMEM_BASE + PMEM_SIZE - 1);
+return (PMEM_BASE <= addr) && (addr <= PMEM_BASE + PMEM_SIZE - 1);
 }
 
 static inline word_t pmem_read(paddr_t addr, int len) {
-    void *p = &pmem[addr - PMEM_BASE];
-    switch (len) {
-        case 1: return *(uint8_t  *)p;
-        case 2: return *(uint16_t *)p;
-        case 4: return *(uint32_t *)p;
-        default: assert(0);
-    }
+void *p = &pmem[addr - PMEM_BASE];
+switch (len) {
+case 1: return *(uint8_t  *)p;
+case 2: return *(uint16_t *)p;
+case 4: return *(uint32_t *)p;
+default: assert(0);
+}
 }
 
 static inline void pmem_write(paddr_t addr, word_t data, int len) {
@@ -59,9 +59,9 @@ static inline void pmem_write(paddr_t addr, word_t data, int len) {
 /* Memory accessing interfaces */
 
 inline word_t paddr_read(paddr_t addr,int len) {
-    if (in_pmem(addr))
-        return pmem_read(addr, len);
-    else return map_read(addr, len, fetch_mmio_map(addr));
+if (in_pmem(addr))
+return pmem_read(addr, len);
+else return map_read(addr, len, fetch_mmio_map(addr));
 }
 
 inline void paddr_write(paddr_t addr, word_t data, int len) {
@@ -75,10 +75,20 @@ word_t vaddr_read_cross_page(vaddr_t addr, int type, int len) {
     paddr_t pg_base = isa_mmu_translate(addr, type, len);
     pg_base=pg_base& ~0xfff;
     paddr_t paddr = (pg_base & ~0xfff) | (addr & 0xfff);
-    word_t low_part=paddr_read(paddr, len1);
-    pg_base+=PAGE_SIZE;
-    word_t high_part=paddr_read(pg_base, len-len1);
-    return (high_part<<(8*(len-len1)))+low_part;
+    word_t low_part;
+    if(len1==1||len1==2)
+        low_part=paddr_read(paddr, len1);
+    else if(len1==3)
+        low_part=paddr_read(paddr, 2)+(paddr_read(paddr+2, 1)<<16);
+    else assert(0);
+    pg_base = isa_mmu_translate(addr + len, type, len) & ~0xfff;
+    word_t high_part;
+    if(len-len1==2||len-len1==1)
+        high_part=paddr_read(pg_base, len-len1);
+    else if(len-len1==3)
+        high_part=paddr_read(pg_base, 2)+(paddr_read(pg_base + 2, 1)<<16);
+    else assert(0);
+    return (high_part<<(8*len1))+low_part;
 }
 
 word_t vaddr_mmu_read(vaddr_t addr, int len, int type) {
@@ -98,10 +108,20 @@ void vaddr_write_cross_page(vaddr_t addr, word_t data, int len) {
     paddr_t pg_base = isa_mmu_translate(addr, MEM_TYPE_WRITE, len);
     pg_base=pg_base& ~0xfff;
     paddr_t paddr = (pg_base & ~0xfff) | (addr & 0xfff);
-    paddr_write(paddr, data&((1<<(len1*8))-1), len1);
-    pg_base+=PAGE_SIZE;
-    paddr_write(pg_base, data>>(len1*8), len-len1);
-//    return (high_part<<(8*(len-len1)))+low_part;
+    if(len1==1||len1==2)
+        paddr_write(paddr, data&((1<<(len1*8))-1), len1);
+    else if(len1==3) {
+        paddr_write(paddr, data&0xffff, 2);
+        paddr_write(paddr+2, (data>>16)&0xff, 1);
+    }else assert(0);
+
+    pg_base = isa_mmu_translate(addr + len, MEM_TYPE_WRITE, len) & ~0xfff;
+    if(len-len1==1||len-len1==2)
+        paddr_write(pg_base, data>>(len1*8), len-len1);
+    else if(len-len1==3){
+        paddr_write(pg_base, (data>>8) & 0xffff , 2);
+        paddr_write(pg_base+2, (data>>24) & 0xff , 1);
+    }else assert(0);
 }
 
 void vaddr_mmu_write(vaddr_t addr, word_t data, int len){

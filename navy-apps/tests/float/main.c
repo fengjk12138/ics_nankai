@@ -17,4 +17,8 @@ int main() {
                 ,ans, 8);
 
     printf("%s\n",ans);
+    int *tmp=(int*)malloc(0x9999);
+    tmp[12]=1;
+
+    return 0;
 }

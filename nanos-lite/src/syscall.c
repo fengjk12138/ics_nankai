@@ -24,6 +24,8 @@ int fs_write(int fd, const void *buf, size_t len);
 
 void switch_boot_pcb();
 
+int mm_brk(uintptr_t brk);
+
 int sys_gettimeofday(unsigned int *tv, unsigned int *tz) {
     tv[1] = io_read(AM_TIMER_UPTIME).us;
     AM_TIMER_RTC_T rtc;
@@ -65,7 +67,7 @@ void do_syscall(Context *c) {
             c->GPRx = fs_lseek(a[1], a[2], a[3]);
             break;
         case SYS_brk:
-            c->GPRx = 0;
+            c->GPRx = mm_brk(a[1]);
             break;
         case SYS_execve:
 //            naive_uload(NULL, (void *) a[1]);
