@@ -43,18 +43,34 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
     fs_read(file, &ehdr, sizeof(Elf_Ehdr));
     assert(*(uint32_t *) ehdr.e_ident == 0x464c457f);
     Elf_Phdr phdr[90];
-//    printf("num=%d\n",ehdr.e_phnum);
+    int last_page = 0;
+    uintptr_t ph_page = 0;
     fs_lseek(file, ehdr.e_phoff, SEEK_SET);
     fs_read(file, phdr, sizeof(Elf_Phdr) * ehdr.e_phnum);
     for (int i = 0; i < ehdr.e_phnum; i++)
         if (phdr[i].p_type == PT_LOAD) {
             fs_lseek(file, phdr[i].p_offset, SEEK_SET);
-            fs_read(file, (void *) phdr[i].p_vaddr, phdr[i].p_filesz);
-//            printf("num=%d %d\n",phdr[i].p_vaddr, phdr[i].p_memsz - phdr[i].p_filesz);
+            if ((phdr[i].p_vaddr >> 12) > last_page) {
+                ph_page = (uintptr_t) new_page(1);
+                map(&(pcb->as), (void *) phdr[i].p_vaddr, (void *) ph_page, 0);
+                last_page = (phdr[i].p_vaddr >> 12);
+            }
+
+            while (((phdr[i].p_vaddr + phdr[i].p_memsz) >> 12) > last_page) {
+                last_page++;
+                map(&(pcb->as), (void *) (last_page << 12), new_page(1), 0);
+            }
+//            printf("num=%x %x %x %x\n", phdr[i].p_vaddr, phdr[i].p_vaddr + phdr[i].p_memsz, ph_page, last_page);
+            fs_read(file, (void *) ((phdr[i].p_vaddr & 0xfff) | ph_page), phdr[i].p_filesz);
+
             if (phdr[i].p_filesz != phdr[i].p_memsz)
-                memset((void *) (phdr[i].p_vaddr + phdr[i].p_filesz), 0,
+                memset((void *) (((phdr[i].p_vaddr + phdr[i].p_filesz) & 0xfff) |
+                                 ((phdr[i].p_filesz & ~0xfff) + ph_page)),
+                       0,
                        phdr[i].p_memsz - phdr[i].p_filesz);
+            ph_page = (last_page << 12);
         }
+//    printf("entry=%x\n", ehdr.e_entry);
     return ehdr.e_entry;
 }
 
@@ -65,9 +81,14 @@ void naive_uload(PCB *pcb, const char *filename) {
 }
 
 void context_uload(PCB *start, const char *filename, char *const argv[], char *const envp[]) {
+    protect(&(start->as));
     Area ar;
     ar.start = start->stack;
     ar.end = (start->stack + sizeof(PCB));
+
+    start->cp = ucontext(&(start->as), ar, (void *) loader(start, filename));
+
+//    printf("stack_%x\n", start->as.area.end);
     int argc = 0;
     int envc = 0;
     for (argc = 0;; argc++)
@@ -80,9 +101,13 @@ void context_uload(PCB *start, const char *filename, char *const argv[], char *c
     int tot_size = 0;
     char *tmp1[128], *tmp2[128];
 
-    void *user_stack=new_page(8);
-    user_stack+=8*PGSIZE;
+    void *user_stack = new_page(8);
+    user_stack += 8 * PGSIZE;
 
+    for (int i = 1; i <= 8; i++)
+        map(&(start->as), start->as.area.end - i * PGSIZE, user_stack - i * PGSIZE, 0);
+
+//    user_stack = start->as.area.end;
     for (int i = envc - 1; i >= 0; i--) {
         strcpy(user_stack - strlen(envp[i]) - 1 - tot_size, envp[i]);
         tmp1[i] = user_stack - strlen(envp[i]) - 1 - tot_size;
@@ -113,9 +138,9 @@ void context_uload(PCB *start, const char *filename, char *const argv[], char *c
     *(uintptr_t * )(user_stack - tot_size - sizeof(uintptr_t)) = (uintptr_t)(user_stack - tot_size);
     tot_size += sizeof(uintptr_t);
 
-    start->cp = ucontext(NULL, ar, (void *) loader(NULL, filename));
-    ((Context * )(start->cp))->eax = (uintptr_t)(user_stack - tot_size);
 
+    ((Context * )(start->cp))->eax = (uintptr_t)(user_stack - tot_size);
+//    printf("0----\n");
 //    printf("size=%d %x %p\n",tot_size,((Context * )(start->cp))->eax, user_stack - tot_size);
 
 }

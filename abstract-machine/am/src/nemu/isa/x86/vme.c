@@ -29,15 +29,11 @@ bool vme_init(void *(*pgalloc_f)(int), void (*pgfree_f)(void *)) {
         for (; va < segments[i].end; va += PGSIZE) {
             map(&kas, va, va, 0);
         }
+//        printf("begin=%x  end=%x\n",segments[i].start,segments[i].end);
     }
-//    printf("%x %x\n",get_cr3(),kas.ptr);
     set_cr3(kas.ptr);
-
-
-//    printf("%x\n",get_cr3());
     set_cr0(get_cr0() | CR0_PG);
-//    set_cr0(get_cr0());
-//    assert(0);
+
     vme_enable = 1;
 
     return true;
@@ -67,20 +63,19 @@ void __am_switch(Context *c) {
 
 void map(AddrSpace *as, void *va, void *pa, int prot) {
 //    printf("va=%p\n",(uintptr_t)va>>22);
+    assert(((uintptr_t)pa & 0xfff)==0);
     if (((uintptr_t *)(as->ptr))[(uintptr_t)va >> 22] == 0) {
         ((uintptr_t *)(as->ptr))[(uintptr_t)va >> 22] = (uintptr_t)pgalloc_usr(PGSIZE);
     }
     uintptr_t* page_dir=(uintptr_t *)((uintptr_t *)(as->ptr))[(uintptr_t)va >> 22];
     page_dir[((uintptr_t)va >> 12) & (0x3ff)] = (uintptr_t)pa;
-//    if(((uintptr_t)va >> 22)==1)
-//        printf("-----%x\n",page_dir);
-//    assert(((uintptr_t)pa&0xfff)==0);
-//printf("os=%d\n",sizeof(uintptr_t));
+
 }
 
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
     Context save;
     save.eip = (uintptr_t) entry;
+    save.cr3=as->ptr;
 //    save.eax = (uintptr_t) arg;
     save.cs = 8;
 

@@ -16,8 +16,12 @@ void __am_vectrap();
 
 void __am_vecnull();
 
+void __am_get_cur_as(Context *c);
+
+void __am_switch(Context *c);
 
 Context *__am_irq_handle(Context *c) {
+    __am_get_cur_as(c);
     if (user_handler) {
         Event ev = {0};
         switch (c->irq) {
@@ -35,7 +39,8 @@ Context *__am_irq_handle(Context *c) {
         c = user_handler(ev, c);
         assert(c != NULL);
     }
-
+    __am_switch(c);
+//    printf("cr3=%x\n",get_cr3());
     return c;
 }
 
@@ -66,9 +71,9 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
     save.eip = (uintptr_t) entry;
 //    save.eax = (uintptr_t) arg;
     save.cs = 8;
-    *(Context * )(kstack.end - sizeof(Context) - 2*sizeof(uintptr_t)) = save;
+    *(Context * )(kstack.end - sizeof(Context) - 2 * sizeof(uintptr_t)) = save;
     *(uintptr_t * )(kstack.end - sizeof(uintptr_t)) = (uintptr_t) arg;
-    return kstack.end - sizeof(Context) - 2*sizeof(uintptr_t);
+    return kstack.end - sizeof(Context) - 2 * sizeof(uintptr_t);
 }
 
 void yield() {

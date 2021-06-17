@@ -11,9 +11,10 @@ int isa_vaddr_check(vaddr_t vaddr, int type, int len) {
 
 uintptr_t get_page(vaddr_t vaddr) {
     uintptr_t page_dir = paddr_read(cpu.cr3 + (vaddr >> 22) * 4, 4);
-    uintptr_t pg_base = paddr_read(page_dir + ((vaddr >> 12) & 0x3ff)*4, 4);
-//    printf("%d pgbase=%x\n", (vaddr >> 22),cpu.cr3 + (vaddr >> 22));
-//    assert((pg_base & 0xfff) == 0);
+    assert(page_dir!=0);
+    uintptr_t pg_base = paddr_read(page_dir + ((vaddr >> 12) & 0x3ff) * 4, 4);
+//    printf("pgbase=%x\n",vaddr);
+    assert((pg_base & 0xfff) == 0);
     return pg_base;
 }
 
