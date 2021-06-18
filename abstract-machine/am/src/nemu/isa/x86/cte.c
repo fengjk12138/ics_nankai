@@ -25,6 +25,9 @@ Context *__am_irq_handle(Context *c) {
     if (user_handler) {
         Event ev = {0};
         switch (c->irq) {
+            case 32:
+                ev.event = EVENT_IRQ_TIMER;
+                break;
             case 0x80:
                 ev.event = EVENT_SYSCALL;
                 break;
@@ -39,6 +42,7 @@ Context *__am_irq_handle(Context *c) {
         c = user_handler(ev, c);
         assert(c != NULL);
     }
+
     __am_switch(c);
 //    printf("cr3=%x\n",get_cr3());
     return c;
@@ -71,6 +75,8 @@ Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
     save.eip = (uintptr_t) entry;
     save.cr3 = NULL;
     save.cs = 8;
+//    IF = 2
+    save.eflags = (1<<2);
     *(Context * )(kstack.end - sizeof(Context) - 2 * sizeof(uintptr_t)) = save;
     *(uintptr_t * )(kstack.end - sizeof(uintptr_t)) = (uintptr_t) arg;
     return kstack.end - sizeof(Context) - 2 * sizeof(uintptr_t);

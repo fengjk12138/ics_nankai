@@ -78,7 +78,8 @@ Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
     save.cr3=as->ptr;
 //    save.eax = (uintptr_t) arg;
     save.cs = 8;
-
+//    IF = 2
+    save.eflags = (1<<2);
     *(Context * )(kstack.end - sizeof(Context)) = save;
 //    *(uintptr_t * )(kstack.end - sizeof(uintptr_t)) = (uintptr_t) arg;
     return kstack.end - sizeof(Context);

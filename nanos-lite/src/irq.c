@@ -10,6 +10,10 @@ static Context *do_event(Event e, Context *c) {
         case EVENT_YIELD:
             return schedule(c);
             break;
+        case EVENT_IRQ_TIMER:
+            Log("timer interupter 10ms...");
+            return schedule(c);
+            break;
         default:
             panic("Unhandled event ID = %d", e.event);
     }

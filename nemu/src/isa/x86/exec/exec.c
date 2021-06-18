@@ -1,7 +1,7 @@
 #include <cpu/exec.h>
 #include "../local-include/decode.h"
 #include "all-instr.h"
-
+void query_intr(DecodeExecState *s);
 static inline void set_width(DecodeExecState *s, int width) {
     if (width == -1) return;
     if (width == 0) {
@@ -131,8 +131,8 @@ static inline def_EHelper(2byte_esc) {
     switch (opcode) {
         /* TODO: Add more instructions!!! */
         IDEX (0x01, gp7_E, gp7)
-        IDEX (0x20, G2E, mov_cr2G)
-        IDEX (0x22, E2G, mov_G2cr)
+        IDEX (0x20, G2E, mov_cr2r)
+        IDEX (0x22, E2G, mov_r2cr)
 
 
         IDEX(0x80, J, jcc)
@@ -368,8 +368,7 @@ static inline void fetch_decode_exec(DecodeExecState *s) {
         IDEX(0xc7, mov_I2E, mov)
         EX(0xc9, leave)
         EX(0xcf, iret)
-        IDEXW(0xcd, I,
-        int, 1)
+        IDEXW(0xcd, I, int, 1)
         IDEXW(0xd0, gp2_1_E, gp2, 1)
         IDEX(0xd1, gp2_1_E, gp2)
         IDEXW(0xd2, gp2_cl2E, gp2, 1)
@@ -415,6 +414,6 @@ vaddr_t isa_exec_once() {
 
     fetch_decode_exec(&s);
     update_pc(&s);
-
+    query_intr(&s);
     return s.seq_pc;
 }

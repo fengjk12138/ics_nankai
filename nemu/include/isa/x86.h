@@ -40,6 +40,7 @@ typedef struct {
     rtlreg_t idtr;
     rtlreg_t cr0;
     rtlreg_t cr3;
+    bool INTR;
 } x86_CPU_state;
 enum {
     carry_flag = 0x01,
